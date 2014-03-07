@@ -8,6 +8,7 @@ import os.path
 import sys
 import pygame
 from pygame.locals import*
+import random
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 
 def load_image(file):
@@ -29,10 +30,12 @@ class Card(object):
     suit_names = ["Clubs", "Diamonds", "Hearts", "Spades"]
     rank_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
-    def __init__(self, suit, rank, image):
+    def __init__(self, suit, rank, image, x, y):
         self.suit = suit
         self.rank = rank
         self.image = image
+        self.x = x
+        self.y = y
         
     def __str__(self):
         return '%s of %s' % (self.rank_names[self.rank], self.suit_names[self.suit])
@@ -46,14 +49,20 @@ class Card(object):
 
 class Deck(object):
     images = []
+    
     image_count = 0
     def __init__(self):
         self.cards = []
+        self.images = load_images('01c.gif','02c.gif','03c.gif','04c.gif','05c.gif','06c.gif','07c.gif','08c.gif','09c.gif','10c.gif','11c.gif','12c.gif','13c.gif',\
+        '01d.gif','02d.gif','03d.gif','04d.gif','05d.gif','06d.gif','07d.gif','08d.gif','09d.gif','10d.gif','11d.gif','12d.gif','13d.gif',\
+        '01h.gif','02h.gif','03h.gif','04h.gif','05h.gif','06h.gif','07h.gif','08h.gif','09h.gif','10h.gif','11h.gif','12h.gif','13h.gif',\
+        '01s.gif','02s.gif','03s.gif','04s.gif','05s.gif','06s.gif','07s.gif','08s.gif','09s.gif','10s.gif','11s.gif','12s.gif','13s.gif')
+        
         for suit in range(0,4):
             for rank in range(0,13):
-                card = Card(suit,rank,images[image_count])
-                image_count +=1
+                card = Card(suit,rank, self.images[self.image_count],0,0)
                 self.cards.append(card)
+                self.image_count +=1
                 
     def __str__(self):
         strDeck = []
@@ -61,6 +70,30 @@ class Deck(object):
             strDeck.append(str(card))
         return '\n'.join(strDeck)
     
+    def add_card(self, card):
+        """Adds a card to the deck."""
+        self.cards.append(card)
+
+    def remove_card(self, card):
+        """Removes a card from the deck."""
+        self.cards.remove(card)
+
+    def pop_card(self, i=-1):
+        """Removes and returns a card from the deck.
+
+        i: index of the card to pop; by default, pops the last card.
+        """
+        return self.cards.pop(i)
+
+    def shuffle(self):
+        """Shuffles the cards in this deck."""
+        random.shuffle(self.cards)
+
+    def sort(self):
+        """Sorts the cards in ascending order."""
+        self.cards.sort()
+    
+
 SCREENRECT     = Rect(0, 0, 640, 480)
 
 def main(winstyle = 0):
@@ -80,8 +113,6 @@ def main(winstyle = 0):
     pygame.display.set_icon(icon)
     pygame.display.set_caption('Pygame Aliens')
     pygame.mouse.set_visible(0)
-    
-
     
     
 if __name__ == '__main__': main()

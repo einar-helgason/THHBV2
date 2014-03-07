@@ -6,13 +6,14 @@ Created on Mar 7, 2014
 import pygame 
 from pygame.locals import *
 import os
+import card
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 SCREENRECT = Rect(0, 0, 640, 480)
 
 def load_image(file):
     "loads an image, prepares it for play"
-    file = os.path.join(main_dir, 'data', file)
+    file = os.path.join(main_dir, 'data', 'images', file)
     try:
         surface = pygame.image.load(file)
     except pygame.error:
@@ -30,24 +31,39 @@ def main():
     pygame.init()
     #win = pygame.display.set_mode((640, 480), pygame.RESIZABLE)
     
-    winstyle = 0 |FULLSCREEN
+    winstyle = 0 #|FULLSCREEN
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
     pygame.display.set_caption("Mouse Focus Workout")
     c = pygame.time.Clock()
+    
+    all = pygame.sprite.RenderUpdates()
+    
    
     going = True
+    #prufa
+    myDeck = card.Deck()
+    myCard = myDeck.cards[0]
+    ###########
     while going :
+        mx,my = pygame.mouse.get_pos()
+        mouse_left_down = pygame.mouse.get_pressed()[0]
+        
+        print mouse_left_down
         for e in pygame.event.get():
             if e.type == QUIT:
                 going = False
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
                     going = False
-                    
-        screen.blit(load_image("01c.gif"),(0,0))
-        pygame.display.flip() # update the display
-        #c.tick(3) # only three images per second
+        if mouse_left_down : 
+            myCard.x = mx
+            myCard.y = my
+        
+        screen.blit(myCard.image,(myCard.x,myCard.y))
+        
+        pygame.display.update() # update the display
+        c.tick(60) # only three images per second
         
         
    
