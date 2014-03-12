@@ -19,12 +19,12 @@ def initDeckImg():
 class Deck(object):
     images = []
     image_count = 0
-    def __init__(self):#baeta vid stadsettningu
+    def __init__(self):
         self.cards = []
         
         for suit in range(0,4):
             for rank in range(0,13):
-                card = Card(suit,rank, self.images[self.image_count],0,0) #LAGA POS
+                card = Card(suit,rank, self.images[self.image_count],0,0) #init card pos @0,0
                 self.add_card(card)
                 self.image_count +=1
                 
@@ -71,6 +71,8 @@ class dealDeck(Deck):
         self.y = y
         for i in range(n):
             self.cards.append(parent.pop_card())
+            self.cards[i].move_center_to(self.x,self.y)
+    
 
 #the rows where cards lay                
 class rowDeck(Deck):
@@ -80,20 +82,25 @@ class rowDeck(Deck):
         self.y = y
         for i in range(n):
             self.cards.append(parent.pop_card()) 
-
+            self.cards[i].move_center_to(self.x,self.y)
+                        
 class colDeck(Deck):
+    #image = load_image('shade.gif')
     def __init__(self,n,parent,x,y):
         self.cards = []
         self.x = x
         self.y = y
         for i in range(n):
             self.cards.append(parent.pop_card())
+            self.cards[i].move_center_to(self.x,self.y)
+            
             
 class handDeck(Deck):
     def __init__(self,x,y):
         self.cards = []
         self.x = x
         self.y = y
+        
         
 def main():
     pygame.init()

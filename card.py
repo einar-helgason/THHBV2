@@ -26,6 +26,10 @@ class Card(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.hidden = True
+        self.post_init()
+        
+    def post_init(self):
+        self.rect.center = (self.x,self.y)
         
     def __str__(self):
         return '%s of %s' % (self.rank_names[self.rank], self.suit_names[self.suit])
@@ -41,9 +45,14 @@ class Card(pygame.sprite.Sprite):
         self.image = self.front
         self.hidden = False
     
+    def move_center_to(self,x,y):
+        self.rect.center = (x,y)
+        
     def update(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             self.rect.center = pygame.mouse.get_pos()
+
+        
 
 def main():
    pass
