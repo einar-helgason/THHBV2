@@ -12,7 +12,7 @@ import random
 from preloader import *
 
 class Card(pygame.sprite.Sprite):
-    suit_names = ["Clubs", "Diamonds", "Spades", "Hearts"]
+    suit_names = ["Clubs", "Diamonds", "Hearts", "Spades"]
     rank_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
     def __init__(self, suit, rank, front, x, y):
@@ -49,10 +49,11 @@ class Card(pygame.sprite.Sprite):
         self.rect.center = (x,y)
         
     def update(self):
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            self.rect.center = pygame.mouse.get_pos()
-
-        
+        if not self.hidden :
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.rect.center = pygame.mouse.get_pos()
+        else :
+            self.flip()
 
 def main():
    pass
