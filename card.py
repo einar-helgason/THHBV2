@@ -12,7 +12,7 @@ import random
 from preloader import *
 
 class Card(pygame.sprite.Sprite):
-    suit_names = ["Clubs", "Diamonds", "Hearts", "Spades"]
+    suit_names = ["Clubs", "Diamonds", "Spades", "Hearts"]
     rank_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
     def __init__(self, suit, rank, front, x, y):
