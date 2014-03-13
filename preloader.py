@@ -7,6 +7,7 @@ import pygame
 from globals import *
 
 
+
 def load_image(file):
     "loads an image, prepares it for play"
     file = os.path.join(main_dir, 'data/images', file)

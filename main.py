@@ -10,53 +10,105 @@ from preloader import *
 import card
 import updateManager
 import deck
+import sys
+from handleMouse import *
 
 def main():
     pygame.init()
     winstyle = 0 #|FULLSCREEN
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
-    
-    pygame.display.set_caption("Mouse Focus Workout")
+    pygame.display.set_caption("Kapall!")
     c = pygame.time.Clock()
     
     all = pygame.sprite.RenderUpdates() #ONOTAD
     
-    deck.Deck.images = load_images('01c.gif','02c.gif','03c.gif','04c.gif','05c.gif','06c.gif','07c.gif','08c.gif','09c.gif','10c.gif','11c.gif','12c.gif','13c.gif',\
-        '01d.gif','02d.gif','03d.gif','04d.gif','05d.gif','06d.gif','07d.gif','08d.gif','09d.gif','10d.gif','11d.gif','12d.gif','13d.gif',\
-        '01h.gif','02h.gif','03h.gif','04h.gif','05h.gif','06h.gif','07h.gif','08h.gif','09h.gif','10h.gif','11h.gif','12h.gif','13h.gif',\
-        '01s.gif','02s.gif','03s.gif','04s.gif','05s.gif','06s.gif','07s.gif','08s.gif','09s.gif','10s.gif','11s.gif','12s.gif','13s.gif')
+    #INIT BACKGROUND
+    background = load_image('background.png')
+    screen.blit(background, (0, 0))
     
-    #prufa
-    myDeck = deck.Deck()
-    myCard = myDeck.cards[0]
+    deck.initDeckImg()
+
+    #init decks.
+    master = deck.Deck()
+    master.shuffle()
     
+    row_decks = []
+    offset = 70
+    for i in range(7):
+        row_decks.append(deck.rowDeck(i+1,master, 150+i*offset, 180))
+    col_decks = []
+    for i in range(4):
+        col_decks.append(deck.colDeck(0,master, 250+i*offset, 50))  
+    
+    hand = deck.handDeck(50+offset,50)
+    
+    deal = deck.dealDeck(len(master),master, 50, 50)
+    #deal.flip_card()
+    
+    cardSprites = pygame.sprite.LayeredUpdates()
+    cardPos = []
+    ########## Add To cardSprites and cardlist
+    for i in range(len(row_decks)):
+        cardSprites.add(row_decks[i].cards)
+        for card in row_decks[i].cards: cardPos.append(card)
+    for i in range(len(col_decks)):
+        cardSprites.add(col_decks[i].cards)
+        for card in col_decks[i].cards: cardPos.append(card)
+    cardSprites.add(hand.cards)
+    for card in hand.cards : cardPos.append(card)
+    cardSprites.add(deal.cards)
+    for card in deal.cards : cardPos.append(card)
     ###########
+    
     
     going = True
     while going :
-        mx,my = pygame.mouse.get_pos() #TAKA UT 
-        mouse_left_down = pygame.mouse.get_pressed()[0] #TAKA UT UR MAIN
+        
+        is_left_mouse_down = pygame.mouse.get_pressed()[0]
+        is_mouse_moving = False
         
         for e in pygame.event.get():
             if e.type == QUIT:
                 going = False
+                break
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
                     going = False
-        if mouse_left_down : 
-            myCard.x = mx
-            myCard.y = my
+                    break
+            if e.type == MOUSEMOTION :
+                is_mouse_moving = True
+            else : is_mouse_moving = False
             
-        screen.blit(myCard.image,(myCard.x,myCard.y)) #TO-DO, LAGA OG HAFA UPDATE MANAGER
+            if e.type == MOUSEBUTTONUP:
+                pos = pygame.mouse.get_pos()
+                for card in cardPos :
+                    if card.rect.collidepoint(pos) and card.hidden :
+                        if card.parent == 'dealDeck' :
+                            if deal.cards[-1] == card :
+                                hand.add_card(deal.pop_card())
+                                cardSprites.move_to_front(card) # laetur spilid teiknast fremst
+                                card.flip()
+                        if card.isTop : card.flip()
+
+
+        #Check if move card
+        if is_left_mouse_down and is_mouse_moving :
+            cardSprites.update()
+            
+        cardSprites.clear(screen, background)
+        cardSprites.draw(screen) #notar image og rect af sprite til ad teikna.
         
-        updateManager.update(screen) #OVIRKUR
+            
         pygame.display.update() # update the display
-        c.tick(60) # only three images per second
-        
+        c.tick(60) #60fps
+    
+    pygame.quit()
+    sys.exit()
 
         
         
-if __name__ == '__main__': main()
+if __name__ == '__main__': 
+    main()
 
     
