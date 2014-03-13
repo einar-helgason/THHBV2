@@ -23,7 +23,7 @@ class Deck(object):
         self.cards = []
         for suit in range(0,4):
             for rank in range(0,13):
-                card = Card(suit,rank, self.images[self.image_count],0,0, type(self)) #init card pos @0,0
+                card = Card(suit,rank, self.images[self.image_count],0,0, type(self)) #init card pos @0,0  taka ut type?
                 self.add_card(card)
                 self.image_count +=1
                 
@@ -84,6 +84,7 @@ class dealDeck(Deck):
             card.top = True
         except:
             pass
+
     
 
 #the rows where cards lay                
@@ -98,7 +99,7 @@ class rowDeck(Deck):
             self.cards[i].move_center_to(self.x,self.y+i*self.offset)
             self.cards[i].parent = 'rowDeck%d' % i
         self.cards[-1].isTop = True
-    
+
 
                         
 class colDeck(Deck):
@@ -111,6 +112,7 @@ class colDeck(Deck):
             self.cards.append(parent.pop_card())
             self.cards[i].move_center_to(self.x,self.y)
             self.cards[i].parent = 'colDeck%d' % i
+
             
             
 class handDeck(Deck):
@@ -128,6 +130,7 @@ class handDeck(Deck):
         card.move_center_to(self.x,self.y)
         card.top = True
         card.parent = 'handDeck'
+
         
 def main():
     pygame.init()
@@ -144,6 +147,7 @@ def main():
     for i in range(7):
         row_decks.append(rowDeck(i+1,Master, 150+i*rd_offset, 100))
     print row_decks[0].cards[0].parent
+
         
     col_decks = []
     for i in range(4):
@@ -152,7 +156,7 @@ def main():
     hand = handDeck(50,50)
     
     deal = dealDeck(len(Master),Master, 0, 0)
-    #deal.flip_card()
+
     
         
     

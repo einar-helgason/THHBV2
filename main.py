@@ -18,7 +18,9 @@ def main():
     winstyle = 0 #|FULLSCREEN
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
+
     pygame.display.set_caption("Kapall!")
+
     c = pygame.time.Clock()
     
     all = pygame.sprite.RenderUpdates() #ONOTAD
@@ -47,6 +49,7 @@ def main():
     #deal.flip_card()
     
     cardSprites = pygame.sprite.LayeredUpdates()
+
     cardPos = []
     ########## Add To cardSprites and cardlist
     for i in range(len(row_decks)):
@@ -59,6 +62,7 @@ def main():
     for card in hand.cards : cardPos.append(card)
     cardSprites.add(deal.cards)
     for card in deal.cards : cardPos.append(card)
+
     ###########
     
     
@@ -90,6 +94,7 @@ def main():
                                 cardSprites.move_to_front(card) # laetur spilid teiknast fremst
                                 card.flip()
                         if card.isTop : card.flip()
+
 
 
         #Check if move card
