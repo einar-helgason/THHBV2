@@ -15,7 +15,6 @@ class Card(pygame.sprite.Sprite):
     suit_names = ["Clubs", "Diamonds", "Hearts", "Spades"]
     rank_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
-
     def __init__(self, suit, rank, front, x, y,parent):
         pygame.sprite.Sprite.__init__(self)
         self.suit = suit
@@ -29,7 +28,6 @@ class Card(pygame.sprite.Sprite):
         self.hidden = True
         self.parent = parent
         self.isTop = False
-
         self.post_init()
         
     def post_init(self):
@@ -53,13 +51,13 @@ class Card(pygame.sprite.Sprite):
         self.rect.center = (x,y)
         
     def update(self):
-        if not self.hidden :
-            if self.rect.collidepoint(pygame.mouse.get_pos()) and self.isTop:
-                self.rect.center = pygame.mouse.get_pos()
+        if pygame.mouse.get_pressed()[0]:
+            if not self.hidden :
+                if self.rect.collidepoint(pygame.mouse.get_pos()) and self.isTop:
+                    self.rect.center = pygame.mouse.get_pos()
         else :
             #self.flip()
             pass
-
 
 def main():
    pass
