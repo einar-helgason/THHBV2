@@ -62,6 +62,17 @@ class Deck(object):
     def flip_card(self):
         self.cards[-1].flip()
 
+    def suitOf_cardOnTop(self):
+        """returns the suit of the card on top."""
+        topCard = self.cards[-1]
+        return topCard.suit
+
+    def rankOf_carOnTop(self):
+        """returns the rank of the card on top"""
+        topCard = self.cards[-1]
+        return topCard.suit
+
+
 #the deck that is dealt from
 class dealDeck(Deck):
     def __init__(self,n,parent,x,y):
@@ -97,7 +108,19 @@ class rowDeck(Deck):
             self.cards[i].move_center_to(self.x,self.y+i*self.offset)
             self.cards[i].parent = 'rowDeck%d' % i
         self.cards[-1].isTop = True
-    
+
+    def canAdd(self, card):
+        """True if you can add your selected card to the row."""
+        isBlack  = self.suitOf_cardOnTop % 2 == 0
+        isRed = self.suitOf_cardOnTop % 2 == 1
+        hasOneLessRank = self.rankOf_cardOnTop == card.rank+1
+        if isBlack and card.suit % 2 == 1 and hasOneLessRank:
+            return True
+        if isRed and card.suit % 2 == 0 and hasOneLessRank:
+            return True
+        else:
+            return False
+
 
                         
 class colDeck(Deck):
@@ -110,6 +133,18 @@ class colDeck(Deck):
             self.cards.append(parent.pop_card())
             self.cards[i].move_center_to(self.x,self.y)
             self.cards[i].parent = 'colDeck%d' % i
+
+    def canAdd(self, card):
+        """cecks for availability."""
+        if card.rank == 0 and not self.cards:
+            return true
+        sameSuit = self.suitOf_cardOnTop == card.suit
+        nextRank = self.rankOf_cardOnTop == card.rank-1
+        if sameSuit and nextRank:
+            return True
+        else:
+            return False
+    
             
             
 class handDeck(Deck):
