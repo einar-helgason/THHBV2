@@ -62,17 +62,6 @@ class Deck(object):
     def flip_card(self):
         self.cards[-1].flip()
 
-    def suitOf_cardOnTop(self):
-        """returns the suit of the card on top."""
-        topCard = self.cards[-1]
-        return topCard.suit
-
-    def rankOf_carOnTop(self):
-        """returns the rank of the card on top"""
-        topCard = self.cards[-1]
-        return topCard.suit
-
-
 #the deck that is dealt from
 class dealDeck(Deck):
     def __init__(self,n,parent,x,y):
@@ -120,7 +109,7 @@ class rowDeck(Deck):
             return True
         else:
             return False
-
+    
 
                         
 class colDeck(Deck):
@@ -133,11 +122,11 @@ class colDeck(Deck):
             self.cards.append(parent.pop_card())
             self.cards[i].move_center_to(self.x,self.y)
             self.cards[i].parent = 'colDeck%d' % i
-
+    
     def canAdd(self, card):
         """cecks for availability."""
         if card.rank == 0 and not self.cards:
-            return true
+            return True
         sameSuit = self.suitOf_cardOnTop == card.suit
         nextRank = self.rankOf_cardOnTop == card.rank-1
         if sameSuit and nextRank:

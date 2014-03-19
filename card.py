@@ -8,6 +8,7 @@ import os.path
 import sys
 import pygame
 from pygame.locals import*
+from globals import *
 import random
 from preloader import *
 
@@ -41,6 +42,7 @@ class Card(pygame.sprite.Sprite):
         #If they are not equal, this is the result of the comparison, else the second item is considered.
         t1 = self.suit, self.rank
         t2 = other.suit, other.rank
+        print cmp(t1,t2)
         return cmp(t1,t2)
     
     def flip(self):
@@ -51,14 +53,14 @@ class Card(pygame.sprite.Sprite):
         self.rect.center = (x,y)
         
     def update(self):
+        # if self != curr_card : return 
         if pygame.mouse.get_pressed()[0]:
             if not self.hidden :
                 if self.rect.collidepoint(pygame.mouse.get_pos()) and self.isTop:
                     self.rect.center = pygame.mouse.get_pos()
         else :
-            #self.flip()
             pass
 
 def main():
-   pass
+    pass
 if __name__ == '__main__': main()

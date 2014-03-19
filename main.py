@@ -38,14 +38,13 @@ def main():
     master.shuffle()
     
     row_decks = []
-    offset = 70
     for i in range(7):
-        row_decks.append(deck.rowDeck(i+1,master, 150+i*offset, 180))
+        row_decks.append(deck.rowDeck(i+1,master, 150+i*y_offset, 180))
     col_decks = []
     for i in range(4):
-        col_decks.append(deck.colDeck(0,master, 250+i*offset, 50))  
+        col_decks.append(deck.colDeck(0,master, 250+i*y_offset, 50))  
     
-    hand = deck.handDeck(50+offset,50)
+    hand = deck.handDeck(50+y_offset,50)
     
     deal = deck.dealDeck(len(master),master, 50, 50)
     
@@ -68,6 +67,7 @@ def main():
     
     going = True
     while going :
+        global curr_card
         """Draw the bottom of all the collection decks, if they are empty this shows."""
         for i in range(4):
             screen.blit(no_card_img, (col_decks[i].x-no_card_img_halfwidth, col_decks[i].y-no_card_img_halfheight))
@@ -83,14 +83,28 @@ def main():
                 if e.key == K_ESCAPE:
                     going = False
                     break
+                
+            if e.type != MOUSEMOTION:
+                global curr_card
+                if e.type == MOUSEBUTTONDOWN:
+                    down_pos = pygame.mouse.get_pos()
+                    for card in cardPos:
+                        if card.rect.collidepoint(down_pos) and card.isTop: #LAGA MED TOP
+                            curr_card = card
+                            print curr_card
+                    print down_pos
+                if e.type == MOUSEBUTTONUP:
+                    up_pos = pygame.mouse.get_pos()
+                    curr_card = None 
+                    print up_pos
+                    
             if e.type == MOUSEMOTION :
                 is_mouse_moving = True
             else : is_mouse_moving = False
             
             """MOUSEDOWN""" #laga, finna ut hvernig ma save-a klikk. Get kanski latid spil halda utan um original pos.
             if is_left_mouse_down:
-                down_pos = pygame.mouse.get_pos()
-                 
+                 pass
             """MOUSEUP"""
             if e.type == MOUSEBUTTONUP:
                 up_pos = pygame.mouse.get_pos()
