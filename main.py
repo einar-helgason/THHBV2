@@ -8,10 +8,8 @@ from pygame.locals import *
 from globals import *
 from preloader import *
 import card
-import updateManager
 import deck
 import sys
-from handleMouse import *
 
 def main():
     pygame.init()
@@ -106,8 +104,9 @@ def main():
                             #TO-DO tjekka hvort curr_card ma fara thangad
                             for i in range(len(col_decks)):
                                 if card.parent == 'rowDeck%d' %i:
-                                    if row_decks[i].canAdd(curr_card) :
-                                        row_decks[0].add(curr_card)
+                                    #if row_decks[i].canAdd(curr_card) :
+                                        #row_decks[0].add(curr_card)
+                                    pass
                                     
                             else: 
                                 try: curr_card.move_center_to(card_old_x, card_old_y)
