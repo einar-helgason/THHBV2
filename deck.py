@@ -109,6 +109,16 @@ class rowDeck(Deck):
             return True
         else:
             return False
+        
+        def add_card(self, card):
+            """Adds a card to the deck."""
+            try :
+                self.cards[-1].isTop = False
+                self.cards.append(card)
+                card.move_center_to(self.x,self.y)
+                card.isTop = True
+            except:
+                pass
     
 
                         
@@ -118,10 +128,11 @@ class colDeck(Deck):
         self.cards = []
         self.x = x
         self.y = y
-        for i in range(n):
+        for i in range(n): #fer aldrei inni thvi n er 0 i byrjun
             self.cards.append(parent.pop_card())
             self.cards[i].move_center_to(self.x,self.y)
             self.cards[i].parent = 'colDeck%d' % i
+            print self.cards[i].parent
     
     def canAdd(self, card):
         """cecks for availability."""
@@ -163,12 +174,12 @@ def main():
     
     Master = Deck()
     Master.shuffle()
+    Master.sort()
     
     row_decks = []
     rd_offset = 70
     for i in range(7):
         row_decks.append(rowDeck(i+1,Master, 150+i*rd_offset, 100))
-    print row_decks[0].cards[0].parent
         
     col_decks = []
     for i in range(4):

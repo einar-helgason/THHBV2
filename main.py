@@ -1,7 +1,7 @@
 '''
 Created on Mar 7, 2014
 
-@author: Tryggvi
+@author: Tryggvi update
 '''
 import pygame
 from pygame.locals import *
@@ -15,6 +15,7 @@ from handleMouse import *
 
 def main():
     pygame.init()
+    
     winstyle = 0 #|FULLSCREEN
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
@@ -22,13 +23,14 @@ def main():
     c = pygame.time.Clock()
     
     all = pygame.sprite.RenderUpdates() #ONOTAD
+    curr_card = None
     
     #INIT BACKGROUND
     background = load_image('background.png')
     screen.blit(background, (0, 0))
 
     no_card_img = load_image('shade.gif')
-    no_card_img_halfwidth = no_card_img.get_width()/2
+    no_card_img_halfwidth = no_card_img.get_width()/2 
     no_card_img_halfheight = no_card_img.get_height()/2
     
     deck.initDeckImg()
@@ -67,7 +69,6 @@ def main():
     
     going = True
     while going :
-        global curr_card
         """Draw the bottom of all the collection decks, if they are empty this shows."""
         for i in range(4):
             screen.blit(no_card_img, (col_decks[i].x-no_card_img_halfwidth, col_decks[i].y-no_card_img_halfheight))
@@ -85,21 +86,44 @@ def main():
                     break
                 
             if e.type != MOUSEMOTION:
-                global curr_card
                 if e.type == MOUSEBUTTONDOWN:
-                    down_pos = pygame.mouse.get_pos()
+                    down_pos = pygame.mouse.get_pos() #save pos of down-click
+                    card_old_x = 0#so card can jump back
+                    card_old_y = 0
+                    card_parent_obj = None
                     for card in cardPos:
-                        if card.rect.collidepoint(down_pos) and card.isTop: #LAGA MED TOP
+                        if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden: #LAGA MED TOP
+                            card_old_x = card.rect.center[0] #sma hax, tekur x og y gildin ur midju spilsinns.
+                            card_old_y = card.rect.center[1]
                             curr_card = card
+                            if card in hand.cards: card_parent_obj = hand #!!!!!!!!!!
                             print curr_card
                     print down_pos
                 if e.type == MOUSEBUTTONUP:
                     up_pos = pygame.mouse.get_pos()
+                    for card in cardPos:
+                        if card.rect.collidepoint(up_pos):
+                            #TO-DO tjekka hvort curr_card ma fara thangad
+                            for i in range(len(col_decks)):
+                                if card.parent == 'rowDeck%d' %i:
+                                    if row_decks[i].canAdd(curr_card) :
+                                        row_decks[0].add(curr_card)
+                                    
+                            else: 
+                                try: curr_card.move_center_to(card_old_x, card_old_y)
+                                except: "ekkert curr_card"
+                        
                     curr_card = None 
                     print up_pos
                     
             if e.type == MOUSEMOTION :
                 is_mouse_moving = True
+                """LAGA THETTA"""
+                try: 
+                    curr_card.update()
+                    cardSprites.move_to_front(curr_card)
+                except: pass #print "ekkert curr_card"
+                """****************"""
             else : is_mouse_moving = False
             
             """MOUSEDOWN""" #laga, finna ut hvernig ma save-a klikk. Get kanski latid spil halda utan um original pos.
@@ -119,10 +143,11 @@ def main():
                                 hand.add_card(deal.pop_card())
                                 cardSprites.move_to_front(card) # laetur spilid teiknast fremst
                                 card.flip()
+                        
 
         
         cardSprites.clear(screen, background)
-        cardSprites.update()
+        #cardSprites.update()
         cardSprites.draw(screen) #notar image og rect af sprite til ad teikna.
         
             

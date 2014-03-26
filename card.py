@@ -38,28 +38,35 @@ class Card(pygame.sprite.Sprite):
         return '%s of %s' % (self.rank_names[self.rank], self.suit_names[self.suit])
     
     def __cmp__(self, other):
-        # the first item of first tuple is compared to the first item of the second tuple.
-        #If they are not equal, this is the result of the comparison, else the second item is considered.
+        """
+        The first item of first tuple is compared to the first item of the second tuple.
+        If they are not equal, this is the result of the comparison, else the second item is considered.
+        """
         t1 = self.suit, self.rank
         t2 = other.suit, other.rank
-        print cmp(t1,t2)
         return cmp(t1,t2)
     
     def flip(self):
         self.image = self.front
         self.hidden = False
     
-    def move_center_to(self,x,y):
-        self.rect.center = (x,y)
+    def move_center_to(self, *args): #taka inn *args? svo haegt se ad taka inn rect (sem er tuple)
+        if len(args) == 1 :
+            assert isinstance(args[0], tuple), 'Argument should be a tuple!'
+            self.rect.center = args[0]
+        else :
+            try:
+                self.rect.center = (args[0],args[1])
+            except (AttributeError, TypeError):
+                raise AssertionError('Input variables should be x and y coordinates')
         
     def update(self):
         # if self != curr_card : return 
-        if pygame.mouse.get_pressed()[0]:
+        #if pygame.mouse.get_pressed()[0]:
             if not self.hidden :
-                if self.rect.collidepoint(pygame.mouse.get_pos()) and self.isTop:
-                    self.rect.center = pygame.mouse.get_pos()
-        else :
-            pass
+                #self.rect.collidepoint(pygame.mouse.get_pos()) THARF EKKI LENGUR UTAF CURR_CARD
+                #if self.isTop:
+                self.rect.center = pygame.mouse.get_pos()
 
 def main():
     pass
