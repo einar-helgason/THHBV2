@@ -18,6 +18,7 @@ class ScoreClass():
 			break
 		if(Tx > maxP - set && Tx < maxP)
 			score += maxP - Tx
+			Tx += maxP - Tx
 
 	#Playing a card from stock to tableau
 	def StockToTab():
@@ -30,6 +31,7 @@ class ScoreClass():
 			break
 		if(Sx > maxS - set && Sx < maxS)
 			score += maxS - Sx
+			Sx += maxS - Sx
 
 	#Transferring a card to the foundations	
 	def CardToFound():
@@ -42,6 +44,7 @@ class ScoreClass():
 			break
 		if(Cx > maxC - set && Cx < maxC)
 			score += maxC - Cx
+			Cx += maxC - Cx
 
 	#Every second of elapsed time
 	def Seconds():
