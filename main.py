@@ -6,7 +6,7 @@ Created on Mar 7, 2014
 import pygame
 from pygame.locals import *
 from globals import *
-from preloader import *
+from preloader import load_image
 import card
 import deck
 import sys
@@ -20,16 +20,12 @@ def main():
     pygame.display.set_caption("Kapall!")
     c = pygame.time.Clock()
     
-    all = pygame.sprite.RenderUpdates() #ONOTAD
     curr_card = None
     
-    #INIT BACKGROUND
-    background = load_image('background.png')
+    background = load_image('background.png') #INIT BACKGROUND
     screen.blit(background, (0, 0))
 
     no_card_img = load_image('shade.gif')
-    no_card_img_halfwidth = no_card_img.get_width()/2 
-    no_card_img_halfheight = no_card_img.get_height()/2
     
     deck.initDeckImg()
 
@@ -39,12 +35,12 @@ def main():
     
     row_decks = []
     for i in range(7):
-        row_decks.append(deck.rowDeck(i+1,master, 150+i*y_offset, 180))
+        row_decks.append(deck.rowDeck(i+1,master, 150+i*x_offset, 180))
     col_decks = []
     for i in range(4):
-        col_decks.append(deck.colDeck(0,master, 250+i*y_offset, 50))  
+        col_decks.append(deck.colDeck(0,master, 250+i*x_offset, 50))  
     
-    hand = deck.handDeck(50+y_offset,50)
+    hand = deck.handDeck(50+x_offset,50)
     
     deal = deck.dealDeck(len(master),master, 50, 50)
     
@@ -69,66 +65,98 @@ def main():
     while going :
         """Draw the bottom of all the collection decks, if they are empty this shows."""
         for i in range(4):
-            screen.blit(no_card_img, (col_decks[i].x-no_card_img_halfwidth, col_decks[i].y-no_card_img_halfheight))
-            
-        is_left_mouse_down = pygame.mouse.get_pressed()[0]
-        is_mouse_moving = False
+            screen.blit(no_card_img, (col_decks[i].x-card_width/2, col_decks[i].y-card_height/2))
         
         for e in pygame.event.get():
+            """EVENT QUIT"""
             if e.type == QUIT:
                 going = False
                 break
+            """EVENT KEYDOWN - ESCAPE KEY"""
             if e.type == KEYDOWN:
                 if e.key == K_ESCAPE:
                     going = False
                     break
-                
+            """EVENT MOUSE IS STILL"""    
             if e.type != MOUSEMOTION:
+                """EVENT MOUSE BUTTON DOWN"""
                 if e.type == MOUSEBUTTONDOWN:
                     down_pos = pygame.mouse.get_pos() #save pos of down-click
-                    card_old_x = 0#so card can jump back
+                    card_old_x = 0 #so card can jump back to old pos
                     card_old_y = 0
-                    card_parent_obj = None
-                    for card in cardPos:
-                        if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden: #LAGA MED TOP
-                            card_old_x = card.rect.center[0] #sma hax, tekur x og y gildin ur midju spilsinns.
-                            card_old_y = card.rect.center[1]
-                            curr_card = card
-                            if card in hand.cards: card_parent_obj = hand #!!!!!!!!!!
-                            print curr_card
-                    print down_pos
+                    """finna hvada spil eg held a og hvad er foreldri thess"""
+                    
+                    """SEARCH FOR CURR_CARD IN ROW DECKS"""
+                    for i in range(len(row_decks)):
+                        for card in row_decks[i].cards:
+                            if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
+                                card_old_x = card.rect.center[0] #sma hax, tekur x og y gildin ur midju spilsinns.
+                                card_old_y = card.rect.center[1]
+                                curr_card = card
+                                curr_card_parent = row_decks[i]
+                    """SEARCH FOR CURR_CARD IN COLLECTION DECKS"""            
+                    for i in range(len(col_decks)):
+                        for card in col_decks[i].cards:
+                            if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
+                                card_old_x = card.rect.center[0] #sma hax, tekur x og y gildin ur midju spilsinns.
+                                card_old_y = card.rect.center[1]
+                                curr_card = card
+                                curr_card_parent = col_decks[i]
+                    """SEARCH FOR CURR_CARD IN HAND DECK"""
+                    for card in hand.cards:
+                            if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
+                                card_old_x = card.rect.center[0] #sma hax, tekur x og y gildin ur midju spilsinns.
+                                card_old_y = card.rect.center[1]
+                                curr_card = card
+                                curr_card_parent = hand
+                    
+                """EVENT MOUSE BUTTON UP"""  #this is inside event mouse is still.  
                 if e.type == MOUSEBUTTONUP:
                     up_pos = pygame.mouse.get_pos()
-                    for card in cardPos:
-                        if card.rect.collidepoint(up_pos):
-                            #TO-DO tjekka hvort curr_card ma fara thangad
-                            for i in range(len(col_decks)):
-                                if card.parent == 'rowDeck%d' %i:
-                                    #if row_decks[i].canAdd(curr_card) :
-                                        #row_decks[0].add(curr_card)
-                                    pass
-                                    
-                            else: 
-                                try: curr_card.move_center_to(card_old_x, card_old_y)
-                                except: "ekkert curr_card"
-                        
-                    curr_card = None 
-                    print up_pos
                     
+                    "TRY TO APPEND CURR_CARD TO ROW DECKS"  
+                    try:
+                        for i in range(len(row_decks)):
+                            for card in row_decks[i].cards:
+                                if card.rect.collidepoint(up_pos) and card.isTop and not card.hidden:
+                                    if row_decks[i].canAdd(curr_card) :
+                                        row_decks[i].add_card(curr_card_parent.pop_card())
+                                        try: curr_card_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
+                                        except: print " --> vandamal i row_drcks ad lata card verda TOP"
+                                        curr_card = None 
+                    except Exception, error:  
+                        print error
+                        print " --> vandamal i row_decks" 
+                                  
+                    "TRY TO APPEND CURR_CARD TO COL DECKS"  
+                    try:
+                        for i in range(len(col_decks)):
+                            if col_decks[i].rect.collidepoint(up_pos):
+                                if col_decks[i].canAdd(curr_card) :
+                                    col_decks[i].add_card(curr_card_parent.pop_card()) #var med curr_card inni i pop_card
+                                    try: curr_card_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
+                                    except: print " --> vandamal i col_drcks ad lata card verda TOP"
+                                    curr_card = None 
+                    except Exception, error:  
+                        print error
+                        print " --> vandamal i col_decks"
+                        
+                    "TRY TO MOVE CURR_CARD TO OLD POSITION"  
+                    try: curr_card.move_center_to(card_old_x, card_old_y)
+                    except Exception, error:  
+                        pass #ekkert curr_card
+                              
+                    curr_card = None #last thing to do after a mouse up event is to release the curr_card.
+            
+            """EVENT MOUSE IS MOVING"""        
             if e.type == MOUSEMOTION :
-                is_mouse_moving = True
-                """LAGA THETTA"""
                 try: 
                     curr_card.update()
                     cardSprites.move_to_front(curr_card)
-                except: pass #print "ekkert curr_card"
-                """****************"""
-            else : is_mouse_moving = False
+                except: pass #ekkert curr_card
             
-            """MOUSEDOWN""" #laga, finna ut hvernig ma save-a klikk. Get kanski latid spil halda utan um original pos.
-            if is_left_mouse_down:
-                 pass
-            """MOUSEUP"""
+            
+            """EVENT MOUSEUP""" #this is the rest of the mouseup event AFTER curr_card stuff has been executed.
             if e.type == MOUSEBUTTONUP:
                 up_pos = pygame.mouse.get_pos()
                 for card in cardPos :
@@ -136,17 +164,23 @@ def main():
                     if card.rect.collidepoint(up_pos) and card.hidden :
                         if card.isTop : 
                             card.flip()
-                        """CLICK IS ON DEALDECK"""
-                        if card.parent == 'dealDeck' :
-                            if deal.cards[-1] == card :
-                                hand.add_card(deal.pop_card())
-                                cardSprites.move_to_front(card) # laetur spilid teiknast fremst
-                                card.flip()
-                        
+                """CLICK IS ON DEALDECK"""
+                if deal.rect.collidepoint(up_pos):
+                    if len(deal.cards) == 0:
+                        for i in range(len(hand.cards)):
+                            hand.cards[-1].isTop = False #til oryggis
+                            deal.add_card(hand.pop_card())
+                            try: deal.cards[-1].flip_back()
+                            except: " --> vandamal i flippa spili i dealDeck, lyklegast thvi hann er tomur"
+                        deal.cards[-1].isTop = True
+                    else: 
+                        hand.add_card(deal.pop_card())
+                        cardSprites.move_to_front(hand.cards[-1]) # laetur spilid teiknast fremst
+                        hand.cards[-1].flip()
+
 
         
         cardSprites.clear(screen, background)
-        #cardSprites.update()
         cardSprites.draw(screen) #notar image og rect af sprite til ad teikna.
         
             

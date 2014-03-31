@@ -4,16 +4,17 @@ Created on Mar 6, 2014
 
 @author: Tryggvi
 '''
-import os.path
-import sys
 import pygame
-from pygame.locals import*
 from globals import *
-import random
-from preloader import *
+from preloader import load_image
 
 class Card(pygame.sprite.Sprite):
-    suit_names = ["Clubs", "Diamonds", "Hearts", "Spades"]
+    """
+    The Card class represents a playing-card in the game. 
+    In it, all card logic and card images are stored.
+    """
+    
+    suit_names = ["Diamonds", "Clubs", "Hearts", "Spades"]
     rank_names = ["Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"]
 
     def __init__(self, suit, rank, front, x, y,parent):
@@ -24,22 +25,15 @@ class Card(pygame.sprite.Sprite):
         self.back = load_image('hidden.gif')
         self.image = self.back
         self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
+        self.rect.center = (x,y)      
         self.hidden = True
-        self.parent = parent
         self.isTop = False
-        self.post_init()
-        
-    def post_init(self):
-        self.rect.center = (self.x,self.y)
         
     def __str__(self):
         return '%s of %s' % (self.rank_names[self.rank], self.suit_names[self.suit])
     
     def __cmp__(self, other):
-        """
-        The first item of first tuple is compared to the first item of the second tuple.
+        """ The first item of first tuple is compared to the first item of the second tuple.
         If they are not equal, this is the result of the comparison, else the second item is considered.
         """
         t1 = self.suit, self.rank
@@ -49,8 +43,12 @@ class Card(pygame.sprite.Sprite):
     def flip(self):
         self.image = self.front
         self.hidden = False
+
+    def flip_back(self):
+        self.image = self.back
+        self.hidden = True
     
-    def move_center_to(self, *args): #taka inn *args? svo haegt se ad taka inn rect (sem er tuple)
+    def move_center_to(self, *args):
         if len(args) == 1 :
             assert isinstance(args[0], tuple), 'Argument should be a tuple!'
             self.rect.center = args[0]
@@ -61,13 +59,10 @@ class Card(pygame.sprite.Sprite):
                 raise AssertionError('Input variables should be x and y coordinates')
         
     def update(self):
-        # if self != curr_card : return 
-        #if pygame.mouse.get_pressed()[0]:
             if not self.hidden :
-                #self.rect.collidepoint(pygame.mouse.get_pos()) THARF EKKI LENGUR UTAF CURR_CARD
-                #if self.isTop:
                 self.rect.center = pygame.mouse.get_pos()
 
 def main():
-    pass
+    print Card.__doc__
+
 if __name__ == '__main__': main()
