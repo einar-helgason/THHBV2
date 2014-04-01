@@ -31,10 +31,12 @@ def main():
     deck.initDeckImg()
 
     #load sound effects
+    mute_sound = False
     mouseClick_sound = load_sound('Lamb.wav')
     colDeck_sound = load_sound('forest-bright_01.wav')
+    flip_sound = load_sound('page-flip-02.wav')
     if pygame.mixer:
-        music = os.path.join(main_dir, 'data', 'naturesounds.ogg')
+        music = os.path.join(main_dir, 'data/sounds', 'naturesounds.ogg')
         pygame.mixer.music.load(music)
         pygame.mixer.music.play(-1)
     
@@ -86,11 +88,21 @@ def main():
                 if e.key == K_ESCAPE:
                     going = False
                     break
+            """Event Keydown - m to mute"""
+            if e.type == KEYDOWN:
+                if e.key == K_m:
+                    mute_sound = not mute_sound
+                    if mute_sound:
+                        pygame.mixer.music.pause()
+                    else:
+                        pygame.mixer.music.unpause()
+                
             """EVENT MOUSE IS STILL"""    
             if e.type != MOUSEMOTION:
                 """EVENT MOUSE BUTTON DOWN"""
                 if e.type == MOUSEBUTTONDOWN:
-                    mouseClick_sound.play()
+                    #if (not mute_sound):
+                        #mouseClick_sound.play()
                     down_pos = pygame.mouse.get_pos() #save pos of down-click
                     card_old_x = 0 #so card can jump back to old pos
                     card_old_y = 0
@@ -155,7 +167,8 @@ def main():
                             if col_decks[i].rect.collidepoint(up_pos):
                                 if col_decks[i].canAdd(curr_card) :
                                     col_decks[i].add_card(curr_card_parent.pop_card()) #var med curr_card inni i pop_card
-                                    colDeck_sound.play()
+                                    if (not mute_sound):
+                                        colDeck_sound.play()
                                     try: curr_card_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
                                     except: print " --> vandamal i col_drcks ad lata card verda TOP"
                                     curr_card = None 
@@ -186,6 +199,8 @@ def main():
                     if card.rect.collidepoint(up_pos) and card.hidden :
                         if card.isTop : 
                             card.flip()
+                            if not mute_sound:
+                                flip_sound.play()
                 """CLICK IS ON DEALDECK"""
                 if deal.rect.collidepoint(up_pos):
                     if len(deal.cards) == 0:
@@ -199,6 +214,8 @@ def main():
                         hand.add_card(deal.pop_card())
                         cardSprites.move_to_front(hand.cards[-1]) # laetur spilid teiknast fremst
                         hand.cards[-1].flip()
+                        if not mute_sound:
+                            flip_sound.play()
 
 
         

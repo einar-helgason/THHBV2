@@ -8,8 +8,9 @@ import random
 from card import Card
 import pygame
 from pygame.locals import *
-from preloader import load_images, load_image
+from preloader import load_images
 from globals import *
+
 
 #Eftir: buid er ad hlada inn i deck.images listann, pygame surfaces fyrir gefnar myndir.
 def initDeckImg():
@@ -104,7 +105,8 @@ class rowDeck(Deck):
 
     def canAdd(self, card):
         """True if you can add your selected card to the row."""
-        if ( card.rank == 12 and len(self.cards) == 0 ):
+        print len(self.cards)
+        if card.rank == 12 and len(self.cards) == 0 :
             return True
         
         top_suit_fix = self.cards[-1].suit+1
@@ -202,6 +204,7 @@ def main():
     rd_offset = 70
     for i in range(7):
         row_decks.append(rowDeck(i+1,Master, 150+i*rd_offset, 100))
+    print row_decks[0].cards[0].parent
         
     col_decks = []
     for i in range(4):
