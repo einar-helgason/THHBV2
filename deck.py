@@ -8,7 +8,7 @@ import random
 from card import Card
 import pygame
 from pygame.locals import *
-from preloader import load_images
+from preloader import load_images, load_image
 from globals import *
 
 #Eftir: buid er ad hlada inn i deck.images listann, pygame surfaces fyrir gefnar myndir.
@@ -25,7 +25,7 @@ class Deck(object):
         self.cards = []
         for suit in range(0,4):
             for rank in range(0,13):
-                card = Card(suit,rank, self.images[self.image_count],0,0, type(self)) #init card pos @0,0
+                card = Card(suit,rank, self.images[self.image_count],0,0) #init card pos @0,0
                 self.add_card(card)
                 self.image_count +=1
                 
@@ -83,8 +83,7 @@ class dealDeck(Deck):
         """Adds a card to the deck."""
         try :
             self.cards[-1].isTop = False
-        except:
-            print " --> vandamal i ad gera spili TOP i dealDeck"
+        except IndexError: pass
         self.cards.append(card)
         card.move_center_to(self.x,self.y)
         card.isTop = True
@@ -96,6 +95,7 @@ class rowDeck(Deck):
         self.cards = []
         self.x = x
         self.y = y
+        self.rect = pygame.Rect(self.x-card_width/2 ,self.y-card_height/2, card_width, card_height)
         for i in range(n):
             self.cards.append(parent.pop_card()) 
             self.cards[i].move_center_to(self.x,self.y+i*y_offset)
@@ -103,7 +103,7 @@ class rowDeck(Deck):
 
     def canAdd(self, card):
         """True if you can add your selected card to the row."""
-        if card.rank == 12 and len(self.cards) == 0 :
+        if ( card.rank == 12 and len(self.cards) == 0 ):
             return True
         
         top_suit_fix = self.cards[-1].suit+1
@@ -123,10 +123,8 @@ class rowDeck(Deck):
         
     def add_card(self, card):
         """Adds a card to the deck."""
-        try :
-            self.cards[-1].isTop = False
-        except:
-            pass 
+        try : self.cards[-1].isTop = False
+        except IndexExeption: pass 
         finally:
             self.cards.append(card)
             card.isTop = True
@@ -135,7 +133,6 @@ class rowDeck(Deck):
 
                         
 class colDeck(Deck):
-    #image = load_image('shade.gif')
     def __init__(self,n,parent,x,y):
         self.cards = []
         self.x = x
@@ -147,7 +144,7 @@ class colDeck(Deck):
     
     def canAdd(self, card):
         """checks for availability."""
-        if card.rank == 0 and len(self.cards) == 0:
+        if card.rank == 0 and len(self.cards) == 0: #Ace of any kind
             return True
         
         sameSuit = self.cards[-1].suit == card.suit
@@ -159,10 +156,8 @@ class colDeck(Deck):
 
     def add_card(self, card):
         """Adds a card to the deck."""
-        try :
-            self.cards[-1].isTop = False
-        except:
-            print " --> vandamal i ad baeta vid spili i col_cards"
+        try : self.cards[-1].isTop = False
+        except IndexError: pass
         finally:
             self.cards.append(card)
             card.isTop = True
@@ -177,15 +172,12 @@ class handDeck(Deck):
         
     def add_card(self, card):
         """Adds a card to the deck."""
-        try:
-            self.cards[-1].isTop = False
-        except : 
-            print " --> vandamal ad gera TOP i hand"
+        try: self.cards[-1].isTop = False
+        except IndexError: pass
         finally:
             self.cards.append(card)
             card.move_center_to(self.x,self.y)
             card.isTop = True
-            card.parent = 'handDeck'
         
 def main():
     pygame.init()
@@ -201,7 +193,6 @@ def main():
     rd_offset = 70
     for i in range(7):
         row_decks.append(rowDeck(i+1,Master, 150+i*rd_offset, 100))
-    print row_decks[0].cards[0].parent
         
     col_decks = []
     for i in range(4):

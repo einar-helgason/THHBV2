@@ -13,19 +13,19 @@ import sys
 
 def main():
     pygame.init()
-    
     winstyle = 0 #|FULLSCREEN
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
     pygame.display.set_caption("Kapall!")
     c = pygame.time.Clock()
     
-    curr_card = None
+    curr_cards_list = []
     
-    background = load_image('background.png') #INIT BACKGROUND
+    background = load_image('background2.jpg') #INIT BACKGROUND
+    background = pygame.transform.scale(background, SCREENRECT.size)
     screen.blit(background, (0, 0))
 
-    no_card_img = load_image('shade.gif')
+    no_card_img = load_image('shade_night.png')
     
     deck.initDeckImg()
 
@@ -38,7 +38,7 @@ def main():
         row_decks.append(deck.rowDeck(i+1,master, 150+i*x_offset, 180))
     col_decks = []
     for i in range(4):
-        col_decks.append(deck.colDeck(0,master, 250+i*x_offset, 50))  
+        col_decks.append(deck.colDeck(0,master, 360+i*x_offset, 53))  
     
     hand = deck.handDeck(50+x_offset,50)
     
@@ -86,77 +86,117 @@ def main():
                     card_old_y = 0
                     """finna hvada spil eg held a og hvad er foreldri thess"""
                     
-                    """SEARCH FOR CURR_CARD IN ROW DECKS"""
+                    """SEARCH FOR curr_cards IN ROW DECKS"""
                     for i in range(len(row_decks)):
                         for card in row_decks[i].cards:
-                            if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
-                                card_old_x = card.rect.center[0] #sma hax, tekur x og y gildin ur midju spilsinns.
+                            #"ATH: HER ERU MORG SPIL TEKIN UPP!"
+                            if card.AOE.collidepoint(down_pos) and not card.hidden:
+                                card_old_x = card.rect.center[0] 
                                 card_old_y = card.rect.center[1]
-                                curr_card = card
-                                curr_card_parent = row_decks[i]
-                    """SEARCH FOR CURR_CARD IN COLLECTION DECKS"""            
+                                curr_cards_parent = row_decks[i]
+                                
+                                index = row_decks[i].cards.index(card)
+                                #index - efstu spil i rodinni eru sett i curr_cards_list
+                                curr_cards_list = row_decks[i].cards[index:]
+                                
+
+                            #"EITT SPIL TEKId UPP."
+                            elif card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
+                                card_old_x = card.rect.center[0] 
+                                card_old_y = card.rect.center[1]
+                                curr_cards_list.append(card)
+                                curr_cards_parent = row_decks[i]
+
+                    """SEARCH FOR curr_cards IN COLLECTION DECKS"""            
                     for i in range(len(col_decks)):
                         for card in col_decks[i].cards:
                             if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
                                 card_old_x = card.rect.center[0] #sma hax, tekur x og y gildin ur midju spilsinns.
                                 card_old_y = card.rect.center[1]
-                                curr_card = card
-                                curr_card_parent = col_decks[i]
-                    """SEARCH FOR CURR_CARD IN HAND DECK"""
+                                curr_cards_list.append(card)
+                                curr_cards_parent = col_decks[i]
+                    """SEARCH FOR curr_cards IN HAND DECK"""
                     for card in hand.cards:
                             if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
                                 card_old_x = card.rect.center[0] #sma hax, tekur x og y gildin ur midju spilsinns.
                                 card_old_y = card.rect.center[1]
-                                curr_card = card
-                                curr_card_parent = hand
+                                curr_cards_list.append(card)
+                                curr_cards_parent = hand
                     
                 """EVENT MOUSE BUTTON UP"""  #this is inside event mouse is still.  
                 if e.type == MOUSEBUTTONUP:
                     up_pos = pygame.mouse.get_pos()
                     
-                    "TRY TO APPEND CURR_CARD TO ROW DECKS"  
-                    try:
+                    "TRY TO APPEND curr_cards TO ROW DECKS"  
+                    try:                                    
                         for i in range(len(row_decks)):
+                            "IF EMPTY ROW, CHECK FOR KING CARD"
+                            if(len(row_decks[i].cards) == 0):
+                                if(row_decks[i].rect.collidepoint(up_pos)):
+                                    if row_decks[i].canAdd(curr_cards_list[0]):
+                                        temp = []
+                                        n = len(curr_cards_list) 
+                                        for a in range(n):
+                                            temp.append(curr_cards_parent.pop_card())  
+                                        try: 
+                                            curr_cards_parent.cards[-1].isTop = True
+                                            row_decks[i].cards[-1].isTop = False
+                                        except Exception, error: print " --> BUG!!"
+                                        
+                                        for b in range(n):
+                                            row_decks[i].add_card(temp.pop())
+                                        curr_cards_list = []
+                            
                             for card in row_decks[i].cards:
+                                "Click is on top card"
                                 if card.rect.collidepoint(up_pos) and card.isTop and not card.hidden:
-                                    if row_decks[i].canAdd(curr_card) :
-                                        row_decks[i].add_card(curr_card_parent.pop_card())
-                                        try: curr_card_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
-                                        except: print " --> vandamal i row_drcks ad lata card verda TOP"
-                                        curr_card = None 
+                                    if row_decks[i].canAdd(curr_cards_list[0]) :
+                                        temp = []
+                                        n = len(curr_cards_list) 
+                                        for a in range(n):
+                                            temp.append(curr_cards_parent.pop_card())  
+                                        try: 
+                                            curr_cards_parent.cards[-1].isTop = True
+                                            row_decks[i].cards[-1].isTop = False
+                                        except Exception, error: print " --> BUG!!"
+                                        
+                                        for b in range(n):
+                                            row_decks[i].add_card(temp.pop())
+                                        curr_cards_list = []
+                                          
                     except Exception, error:  
                         print error
                         print " --> vandamal i row_decks" 
                                   
-                    "TRY TO APPEND CURR_CARD TO COL DECKS"  
+                    "TRY TO APPEND curr_cards TO COL DECKS"  
                     try:
                         for i in range(len(col_decks)):
                             if col_decks[i].rect.collidepoint(up_pos):
-                                if col_decks[i].canAdd(curr_card) :
-                                    col_decks[i].add_card(curr_card_parent.pop_card()) #var med curr_card inni i pop_card
-                                    try: curr_card_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
-                                    except: print " --> vandamal i col_drcks ad lata card verda TOP"
-                                    curr_card = None 
+                                if col_decks[i].canAdd(curr_cards_list[0]) :
+                                    col_decks[i].add_card(curr_cards_parent.pop_card()) #var med curr_cards inni i pop_card
+                                    try: curr_cards_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
+                                    except IndexError: pass
+                                    curr_cards_list = []
                     except Exception, error:  
                         print error
                         print " --> vandamal i col_decks"
                         
-                    "TRY TO MOVE CURR_CARD TO OLD POSITION"  
-                    try: curr_card.move_center_to(card_old_x, card_old_y)
-                    except Exception, error:  
-                        pass #ekkert curr_card
+                    "MOVE curr_cards TO OLD POSITION"  
+                    for i in range(len(curr_cards_list)): 
+                        curr_cards_list[i].move_center_to(card_old_x, card_old_y+i*y_offset)
+
                               
-                    curr_card = None #last thing to do after a mouse up event is to release the curr_card.
+                    curr_cards_list = [] #last thing to do after a mouse up event is to release the curr_cards.
             
             """EVENT MOUSE IS MOVING"""        
             if e.type == MOUSEMOTION :
-                try: 
-                    curr_card.update()
-                    cardSprites.move_to_front(curr_card)
-                except: pass #ekkert curr_card
+                for i in range(len(curr_cards_list)):
+                    curr_cards_list[i].update(i)
+                    cardSprites.move_to_front(curr_cards_list[i])
+                            
             
             
-            """EVENT MOUSEUP""" #this is the rest of the mouseup event AFTER curr_card stuff has been executed.
+            """EVENT MOUSEUP""" #this is the rest of the mouseup event AFTER curr_cards stuff has been executed.
             if e.type == MOUSEBUTTONUP:
                 up_pos = pygame.mouse.get_pos()
                 for card in cardPos :
@@ -171,8 +211,9 @@ def main():
                             hand.cards[-1].isTop = False #til oryggis
                             deal.add_card(hand.pop_card())
                             try: deal.cards[-1].flip_back()
-                            except: " --> vandamal i flippa spili i dealDeck, lyklegast thvi hann er tomur"
-                        deal.cards[-1].isTop = True
+                            except IndexError: pass
+                        try: deal.cards[-1].isTop = True
+                        except IndexError: pass
                     else: 
                         hand.add_card(deal.pop_card())
                         cardSprites.move_to_front(hand.cards[-1]) # laetur spilid teiknast fremst
