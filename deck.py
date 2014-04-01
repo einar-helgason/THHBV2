@@ -11,6 +11,7 @@ from pygame.locals import *
 from preloader import load_images, load_image
 from globals import *
 
+
 #Eftir: buid er ad hlada inn i deck.images listann, pygame surfaces fyrir gefnar myndir.
 def initDeckImg():
     Deck.images = load_images('01d.gif','02d.gif','03d.gif','04d.gif','05d.gif','06d.gif','07d.gif','08d.gif','09d.gif','10d.gif','11d.gif','12d.gif','13d.gif',\
@@ -124,7 +125,7 @@ class rowDeck(Deck):
     def add_card(self, card):
         """Adds a card to the deck."""
         try : self.cards[-1].isTop = False
-        except IndexExeption: pass 
+        except IndexError: pass 
         finally:
             self.cards.append(card)
             card.isTop = True

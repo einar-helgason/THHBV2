@@ -10,6 +10,7 @@ from preloader import load_image
 import card
 import deck
 import sys
+from sounds import *
 
 def main():
     pygame.init()
@@ -29,6 +30,16 @@ def main():
     
     deck.initDeckImg()
 
+    #load sound effects
+    mute_sound = False
+    mouseClick_sound = load_sound('Lamb.wav')
+    colDeck_sound = load_sound('forest-bright_01.wav')
+    flip_sound = load_sound('page-flip-02.wav')
+    if pygame.mixer:
+        music = os.path.join(main_dir, 'data/sounds', 'naturesounds.ogg')
+        pygame.mixer.music.load(music)
+        pygame.mixer.music.play(-1)
+    
     #init decks.
     master = deck.Deck()
     master.shuffle()
@@ -77,10 +88,21 @@ def main():
                 if e.key == K_ESCAPE:
                     going = False
                     break
+            """Event Keydown - m to mute"""
+            if e.type == KEYDOWN:
+                if e.key == K_m:
+                    mute_sound = not mute_sound
+                    if mute_sound:
+                        pygame.mixer.music.pause()
+                    else:
+                        pygame.mixer.music.unpause()
+                
             """EVENT MOUSE IS STILL"""    
             if e.type != MOUSEMOTION:
                 """EVENT MOUSE BUTTON DOWN"""
                 if e.type == MOUSEBUTTONDOWN:
+                    #if (not mute_sound):
+                        #mouseClick_sound.play()
                     down_pos = pygame.mouse.get_pos() #save pos of down-click
                     card_old_x = 0 #so card can jump back to old pos
                     card_old_y = 0
@@ -163,10 +185,8 @@ def main():
                                         for b in range(n):
                                             row_decks[i].add_card(temp.pop())
                                         curr_cards_list = []
-                                          
-                    except Exception, error:  
-                        print error
-                        print " --> vandamal i row_decks" 
+
+                    except IndexError:  pass
                                   
                     "TRY TO APPEND curr_cards TO COL DECKS"  
                     try:
@@ -177,9 +197,10 @@ def main():
                                     try: curr_cards_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
                                     except IndexError: pass
                                     curr_cards_list = []
-                    except Exception, error:  
-                        print error
-                        print " --> vandamal i col_decks"
+                                    if (not mute_sound):
+                                        colDeck_sound.play()
+
+                    except IndexError: pass
                         
                     "MOVE curr_cards TO OLD POSITION"  
                     for i in range(len(curr_cards_list)): 
@@ -204,6 +225,8 @@ def main():
                     if card.rect.collidepoint(up_pos) and card.hidden :
                         if card.isTop : 
                             card.flip()
+                            if not mute_sound:
+                                flip_sound.play()
                 """CLICK IS ON DEALDECK"""
                 if deal.rect.collidepoint(up_pos):
                     if len(deal.cards) == 0:
@@ -218,6 +241,8 @@ def main():
                         hand.add_card(deal.pop_card())
                         cardSprites.move_to_front(hand.cards[-1]) # laetur spilid teiknast fremst
                         hand.cards[-1].flip()
+                        if not mute_sound:
+                            flip_sound.play()
 
 
         
