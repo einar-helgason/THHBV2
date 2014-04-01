@@ -22,7 +22,7 @@ class Card(pygame.sprite.Sprite):
         self.suit = suit
         self.rank = rank
         self.front = front
-        self.back = load_image('hidden.gif')
+        self.back = load_image('hidden_owl.png')
         self.image = self.back
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)      

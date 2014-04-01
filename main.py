@@ -13,7 +13,6 @@ import sys
 
 def main():
     pygame.init()
-    
     winstyle = 0 #|FULLSCREEN
     bestdepth = pygame.display.mode_ok(SCREENRECT.size, winstyle, 32)
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
@@ -22,10 +21,11 @@ def main():
     
     curr_card = None
     
-    background = load_image('background.png') #INIT BACKGROUND
+    background = load_image('background2.jpg') #INIT BACKGROUND
+    background = pygame.transform.scale(background, SCREENRECT.size)
     screen.blit(background, (0, 0))
 
-    no_card_img = load_image('shade.gif')
+    no_card_img = load_image('shade_night.png')
     
     deck.initDeckImg()
 
@@ -38,7 +38,7 @@ def main():
         row_decks.append(deck.rowDeck(i+1,master, 150+i*x_offset, 180))
     col_decks = []
     for i in range(4):
-        col_decks.append(deck.colDeck(0,master, 250+i*x_offset, 50))  
+        col_decks.append(deck.colDeck(0,master, 360+i*x_offset, 53))  
     
     hand = deck.handDeck(50+x_offset,50)
     
@@ -115,8 +115,17 @@ def main():
                     up_pos = pygame.mouse.get_pos()
                     
                     "TRY TO APPEND CURR_CARD TO ROW DECKS"  
-                    try:
+                    try:                                    
                         for i in range(len(row_decks)):
+                            "IF EMPTY ROW, CHECK FOR KING CARD"
+                            if(len(row_decks[i].cards) == 0):
+                                if(row_decks[i].rect.collidepoint(up_pos)):
+                                    if row_decks[i].canAdd(curr_card):
+                                        row_decks[i].add_card(curr_card_parent.pop_card())
+                                        try: curr_card_parent.cards[-1].isTop = True
+                                        except: pass
+                                        curr_card = None
+                                        
                             for card in row_decks[i].cards:
                                 if card.rect.collidepoint(up_pos) and card.isTop and not card.hidden:
                                     if row_decks[i].canAdd(curr_card) :
