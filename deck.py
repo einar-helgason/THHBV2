@@ -104,10 +104,6 @@ class rowDeck(Deck):
 
     def canAdd(self, card):
         """True if you can add your selected card to the row."""
-        print 0
-        print card.rank
-        print self
-        print len(self.cards)
         if ( card.rank == 12 and len(self.cards) == 0 ):
             return True
         

@@ -10,6 +10,7 @@ from preloader import load_image
 import card
 import deck
 import sys
+from sounds import *
 
 def main():
     pygame.init()
@@ -29,6 +30,14 @@ def main():
     
     deck.initDeckImg()
 
+    #load sound effects
+    mouseClick_sound = load_sound('Lamb.wav')
+    colDeck_sound = load_sound('forest-bright_01.wav')
+    if pygame.mixer:
+        music = os.path.join(main_dir, 'data', 'naturesounds.ogg')
+        pygame.mixer.music.load(music)
+        pygame.mixer.music.play(-1)
+    
     #init decks.
     master = deck.Deck()
     master.shuffle()
@@ -81,6 +90,7 @@ def main():
             if e.type != MOUSEMOTION:
                 """EVENT MOUSE BUTTON DOWN"""
                 if e.type == MOUSEBUTTONDOWN:
+                    mouseClick_sound.play()
                     down_pos = pygame.mouse.get_pos() #save pos of down-click
                     card_old_x = 0 #so card can jump back to old pos
                     card_old_y = 0
@@ -125,14 +135,16 @@ def main():
                                         try: curr_card_parent.cards[-1].isTop = True
                                         except: pass
                                         curr_card = None
-                                        
+
                             for card in row_decks[i].cards:
-                                if card.rect.collidepoint(up_pos) and card.isTop and not card.hidden:
+                                
+                                if card.rect.collidepoint(up_pos) and card.isTop and not card.hidden :
                                     if row_decks[i].canAdd(curr_card) :
                                         row_decks[i].add_card(curr_card_parent.pop_card())
                                         try: curr_card_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
                                         except: print " --> vandamal i row_drcks ad lata card verda TOP"
-                                        curr_card = None 
+                                        curr_card = None
+                                
                     except Exception, error:  
                         print error
                         print " --> vandamal i row_decks" 
@@ -143,6 +155,7 @@ def main():
                             if col_decks[i].rect.collidepoint(up_pos):
                                 if col_decks[i].canAdd(curr_card) :
                                     col_decks[i].add_card(curr_card_parent.pop_card()) #var med curr_card inni i pop_card
+                                    colDeck_sound.play()
                                     try: curr_card_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
                                     except: print " --> vandamal i col_drcks ad lata card verda TOP"
                                     curr_card = None 
