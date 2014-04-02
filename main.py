@@ -35,6 +35,7 @@ def main():
     mouseClick_sound = load_sound('Lamb.wav')
     colDeck_sound = load_sound('forest-bright_01.wav')
     flip_sound = load_sound('page-flip-02.wav')
+    winning_sound = load_sound('tribWin.wav')
     if pygame.mixer:
         music = os.path.join(main_dir, 'data/sounds', 'naturesounds.ogg')
         pygame.mixer.music.load(music)
@@ -190,6 +191,7 @@ def main():
                                   
                     "TRY TO APPEND curr_cards TO COL DECKS"  
                     try:
+                        col_deck_sum = 0
                         for i in range(len(col_decks)):
                             if col_decks[i].rect.collidepoint(up_pos):
                                 if col_decks[i].canAdd(curr_cards_list[0]) :
@@ -199,6 +201,10 @@ def main():
                                     curr_cards_list = []
                                     if (not mute_sound):
                                         colDeck_sound.play()
+                            col_deck_sum = col_deck_sum + len(col_decks[i])
+                        """WINNER IF HAPPENDS"""
+                        if col_deck_sum == 52:
+                            winning_sound.play()
 
                     except IndexError: pass
                         
