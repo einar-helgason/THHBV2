@@ -30,9 +30,6 @@ def main():
     no_card_img = load_image('shade_night.png')
     
     deck.initDeckImg()
-    #draw on screen
-    drawText(screen,"ESC to exit!",400,400)
-    drawScore(screen,10)
     
     #load sound effects
     mute_sound = False
@@ -262,6 +259,11 @@ def main():
             
         pygame.display.update() # update the display
         c.tick(60) #60fps
+
+        #draw on screen
+        drawText(screen,SCREENRECT,"ESC to exit!",500,440)
+        drawScore(screen,SCREENRECT,10)
+        drawTime(screen,10)
     
     pygame.quit()
     sys.exit()
