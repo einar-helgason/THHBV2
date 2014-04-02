@@ -1,86 +1,87 @@
-class ScoreClass():
+class Score(object):
 	
-	winScore = 0
-	score=0
-	Tx = 0
-	Sx = 0
-	Cx = 0
-	set = 0
+	def __init__(self):
+		self.winScore = 0
+		self.score = 0
+		self.Tx = 0
+		self.Sx = 0
+		self.Cx = 0
+		self.set = 0
 
 	#Turning over a face down tableau card
-	def TurnOver():
+	def TurnOver(self):
 		maxP = 525
 		set = 25 
-		if(Tx <= maxP - set)
-			score += set
-			Tx += set
-		if(Tx >= maxP)
-			break
-		if(Tx > maxP - set && Tx < maxP)
-			score += maxP - Tx
-			Tx += maxP - Tx
+		if(self.Tx <= maxP - set):
+			self.self.score += set
+			self.Tx += set
+		if(self.Tx >= maxP):
+			pass
+		if(self.Tx > (maxP - set) and self.Tx < maxP):
+			self.score += maxP - self.Tx
+			self.Tx += maxP - self.Tx
 
 	#Playing a card from stock to tableau
-	def StockToTab():
+	def StockToTab(self):
 		set = 45
 		maxS = 1080
-		if(Sx <= maxS - set)
-			score += set
-			Sx += set
-		if(Sx >= maxS)
-			break
-		if(Sx > maxS - set && Sx < maxS)
-			score += maxS - Sx
-			Sx += maxS - Sx
+		if(self.Sx <= maxS - set):
+			self.score += set
+			self.Sx += set
+		if(self.Sx >= maxS):
+			pass
+		if(self.Sx > (maxS - set) and self.Sx < maxS):
+			self.score += maxS - self.Sx
+			self.Sx += maxS - self.Sx
 
 	#Transferring a card to the foundations	
-	def CardToFound():
+	def CardToFound(self):
 		set = 60
 		maxC = 3120
-		if(Cx <= maxC - set)
-			score += set
-			Cx += set
-		if(Cx >= maxC)
-			break
-		if(Cx > maxC - set && Cx < maxC)
-			score += maxC - Cx
-			Cx += maxC - Cx
+		if(self.Cx <= (maxC - set)):
+			self.score += set
+			self.Cx += set
+		if(self.Cx >= maxC):
+			pass
+		if(self.Cx > (maxC - set) and self.Cx < maxC):
+			self.score += maxC - self.Cx
+			self.Cx += maxC - self.Cx
 
 	#Every second of elapsed time
-	def Seconds():
+	def Seconds(self):
 		set = -1
-		score += set
+		self.score += set
 
 	#Every time Undo is used
-	def Undo():
+	def Undo(self):
 		set = -25
-		score += set
+		self.score += set
 
 	#Exposed card of a packed column to another packed column
-	def PackecColumn():
+	def PackecColumn(self):
 		set = -25
-		score += set
+		self.score += set
 
 	#Moving a foundation card back to the tableau
-	def FoundToTabl():
+	def FoundToTabl(self):
 		set = -75
-		score += set
+		self.score += set
 
 	#Each re-deal after the third pass through the stock (Deal 3)
-	def reDeal3():
+	def reDeal3(self):
 		set = -125
-		score += set
+		self.score += set
 
 	#Each re-deal after the first pass through the stock (Deal 1)
-	def reDeal1():
+	def reDeal1(self):
 		set = -200
-		score += set
+		self.score += set
 
 	#Each re-deal after the first pass through the stock (Unlimited Passes)
-	def reDealUL():
+	def reDealUL(self):
 		set = -175
-		score += set
+		self.score += set
 
-	def Win(score, timePassed):
-		winScore = (2*score)-(10*timePassed)
+	def Win(self,timePassed):
+		winScore = (2*self.score)-(10*timePassed)
 		return winScore

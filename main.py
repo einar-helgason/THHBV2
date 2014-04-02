@@ -10,8 +10,10 @@ from preloader import load_image
 import card
 import deck
 import sys
+import ScoreClass
 from sounds import *
 from textonscreen import*
+
 
 def main():
     pygame.init()
@@ -20,20 +22,20 @@ def main():
     screen = pygame.display.set_mode(SCREENRECT.size, winstyle, bestdepth)
     pygame.display.set_caption("Kapall!")
     c = pygame.time.Clock()
+    time_elapsed = 0
     
     curr_cards_list = []
     
     background = load_image('background2.jpg') #INIT BACKGROUND
     background = pygame.transform.scale(background, SCREENRECT.size)
-    screen.blit(background, (0, 0))
 
     no_card_img = load_image('shade_night.png')
     
     deck.initDeckImg()
-    
+
     #load sound effects
     mute_sound = False
-    mouseClick_sound = load_sound('Lamb.wav')
+    mouseClick_sound = load_sound('Lamb.wav') #ekki notad
     colDeck_sound = load_sound('1-up.wav')
     flip_sound = load_sound('page-flip-02.wav')
     winning_sound = load_sound('tribWin.wav')
@@ -72,15 +74,22 @@ def main():
     cardSprites.add(deal.cards)
     for card in deal.cards : cardPos.append(card)
     ###########
+    game_score = ScoreClass.Score()
     
-    
+    pygame.time.set_timer(USEREVENT+1, 1000)
     going = True
     while going :
+        screen.blit(background, (0, 0))
         """Draw the bottom of all the collection decks, if they are empty this shows."""
         for i in range(4):
             screen.blit(no_card_img, (col_decks[i].x-card_width/2, col_decks[i].y-card_height/2))
         
         for e in pygame.event.get():
+            """EVERY SECOND"""
+            if e.type == USEREVENT+1:
+                game_score.Seconds()
+                time_elapsed += 1
+            
             """EVENT QUIT"""
             if e.type == QUIT:
                 going = False
@@ -165,7 +174,7 @@ def main():
                                         try: 
                                             curr_cards_parent.cards[-1].isTop = True
                                             row_decks[i].cards[-1].isTop = False
-                                        except Exception, error: print " --> BUG!!"
+                                        except Exception, error: pass#print " --> BUG!!"
                                         
                                         for b in range(n):
                                             row_decks[i].add_card(temp.pop())
@@ -182,7 +191,7 @@ def main():
                                         try: 
                                             curr_cards_parent.cards[-1].isTop = True
                                             row_decks[i].cards[-1].isTop = False
-                                        except Exception, error: print " --> BUG!!"
+                                        except Exception, error: pass #print " --> BUG!!"
                                         
                                         for b in range(n):
                                             row_decks[i].add_card(temp.pop())
@@ -203,10 +212,11 @@ def main():
                                     if (not mute_sound):
                                         colDeck_sound.play()
                             col_deck_sum = col_deck_sum + len(col_decks[i])
+                        
                         """WINNER IF HAPPENDS"""
                         if col_deck_sum == 52:
                             winning_sound.play()
-
+                            
                     except IndexError: pass
                         
                     "MOVE curr_cards TO OLD POSITION"  
@@ -252,18 +262,18 @@ def main():
                             flip_sound.play()
 
 
+        """ DRAW SCORE """
+        drawText(screen, SCREENRECT, "ESC to exit!",500,440)
+        drawScore(screen, SCREENRECT, game_score.score)
+        drawTime(screen, time_elapsed)
+        
         
         cardSprites.clear(screen, background)
         cardSprites.draw(screen) #notar image og rect af sprite til ad teikna.
         
-            
+        
         pygame.display.update() # update the display
         c.tick(60) #60fps
-
-        #draw on screen
-        drawText(screen,SCREENRECT,"ESC to exit!",500,440)
-        drawScore(screen,SCREENRECT,10)
-        drawTime(screen,10)
     
     pygame.quit()
     sys.exit()

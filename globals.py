@@ -13,7 +13,7 @@ card_width= 57
 card_height = 85
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
-SCREENRECT = Rect(0, 0, 640, 480)
+SCREENRECT = Rect(0, 0, 800, 480)
 
 def main():
     """This module contains global variables shared with all other modules."""
