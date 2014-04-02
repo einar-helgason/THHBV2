@@ -11,6 +11,7 @@ import card
 import deck
 import sys
 from sounds import *
+from textonscreen import*
 
 def main():
     pygame.init()
@@ -29,11 +30,14 @@ def main():
     no_card_img = load_image('shade_night.png')
     
     deck.initDeckImg()
-
+    #draw on screen
+    drawText(screen,"ESC to exit!",400,400)
+    drawScore(screen,10)
+    
     #load sound effects
     mute_sound = False
     mouseClick_sound = load_sound('Lamb.wav')
-    colDeck_sound = load_sound('forest-bright_01.wav')
+    colDeck_sound = load_sound('1-up.wav')
     flip_sound = load_sound('page-flip-02.wav')
     winning_sound = load_sound('tribWin.wav')
     if pygame.mixer:
