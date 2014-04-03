@@ -28,3 +28,4 @@ def drawHighScore(screen, score_lst):
         scoretext=font.render("HighScore: "+str(score_lst[i][2]), 1,(255,255,255))
         screen.blit(scoretext, (SCREENRECT.width*0.1, SCREENRECT.height*0.6+i*offset))
 
+

@@ -109,14 +109,23 @@ class Game(object):
                     going = False
                     self.keep_playing = False
                     break
-                """EVENT KEYDOWN - ESCAPE KEY"""
+
+                """EVENT KEYDOWN"""
                 if e.type == KEYDOWN:
+
+                    """" ESCAPE KEY - esc"""
                     if e.key == K_ESCAPE:
                         going = False
                         self.keep_playing = False
                         break
-                """Event Keydown - m to mute"""
-                if e.type == KEYDOWN:
+
+                    """ NEW GAME - r for new game """
+                    if e.key == K_r:
+                        going = False
+                        self.keep_playing = True
+                        break
+
+                    """Event Keydown - m to mute"""
                     if e.key == K_m:
                         mute_sound = not mute_sound
                         if mute_sound:
@@ -124,7 +133,7 @@ class Game(object):
                         else:
                             pygame.mixer.music.unpause()
                         
-                            
+                        """testing for the highscore! -REMOVE THIS LATER- """
                         if len(hs_lst) == 0: 
                             hs_lst = highscore.getHighScore()
                             highscore.setHighScore("player", game_score.score) 
@@ -138,13 +147,7 @@ class Game(object):
                                     hs_lst = highscore.getHighScore()
                                     break
 
-                
-                """ NEW GAME """
-                if e.type == KEYDOWN:
-                    if e.key == K_r:
-                        going = False
-                        self.keep_playing = True
-                        break
+
                 """EVENT MOUSE IS STILL"""    
                 if e.type != MOUSEMOTION:
                     """EVENT MOUSE BUTTON DOWN"""
@@ -164,12 +167,10 @@ class Game(object):
                                     card_old_x = card.rect.center[0] 
                                     card_old_y = card.rect.center[1]
                                     curr_cards_parent = row_decks[i]
-                                    
                                     index = row_decks[i].cards.index(card)
                                     #index - efstu spil i rodinni eru sett i curr_cards_list
                                     curr_cards_list = row_decks[i].cards[index:]
                                     
-    
                                 #"EITT SPIL TEKId UPP."
                                 elif card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
                                     card_old_x = card.rect.center[0] 
@@ -185,6 +186,7 @@ class Game(object):
                                     card_old_y = card.rect.center[1]
                                     curr_cards_list.append(card)
                                     curr_cards_parent = col_decks[i]
+
                         """SEARCH FOR curr_cards IN HAND DECK"""
                         for card in hand.cards:
                                 if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
@@ -192,7 +194,9 @@ class Game(object):
                                     card_old_y = card.rect.center[1]
                                     curr_cards_list.append(card)
                                     curr_cards_parent = hand
-                        
+
+                     
+
                     """EVENT MOUSE BUTTON UP"""  #this is inside event mouse is still.  
                     if e.type == MOUSEBUTTONUP:
                         up_pos = pygame.mouse.get_pos()

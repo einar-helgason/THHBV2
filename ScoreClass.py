@@ -21,7 +21,6 @@ class Score(object):
 			self.score += maxP - self.Tx
 			self.Tx += maxP - self.Tx
 
-
 	#Playing a card from stock to tableau
 	def StockToTabl(self):
 		set = 45
@@ -77,7 +76,6 @@ class Score(object):
 	def reDeal3(self):
 		set = -125
 		self.score += set
-
 
 	#Each re-deal after the first pass through the stock (Unlimited Passes)
 	def reDealUL(self):
