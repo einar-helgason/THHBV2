@@ -109,23 +109,14 @@ class Game(object):
                     going = False
                     self.keep_playing = False
                     break
-
-                """EVENT KEYDOWN"""
+                """EVENT KEYDOWN - ESCAPE KEY"""
                 if e.type == KEYDOWN:
-
-                    """" ESCAPE KEY - esc"""
                     if e.key == K_ESCAPE:
                         going = False
                         self.keep_playing = False
                         break
-
-                    """ NEW GAME - r for new game """
-                    if e.key == K_r:
-                        going = False
-                        self.keep_playing = True
-                        break
-
-                    """Event Keydown - m to mute"""
+                """Event Keydown - m to mute"""
+                if e.type == KEYDOWN:
                     if e.key == K_m:
                         mute_sound = not mute_sound
                         if mute_sound:
@@ -133,7 +124,7 @@ class Game(object):
                         else:
                             pygame.mixer.music.unpause()
                         
-                        """testing for the highscore! -REMOVE THIS LATER- """
+                            
                         if len(hs_lst) == 0: 
                             hs_lst = highscore.getHighScore()
                             highscore.setHighScore("player", game_score.score) 
@@ -147,7 +138,13 @@ class Game(object):
                                     hs_lst = highscore.getHighScore()
                                     break
 
-
+                
+                """ NEW GAME """
+                if e.type == KEYDOWN:
+                    if e.key == K_r:
+                        going = False
+                        self.keep_playing = True
+                        break
                 """EVENT MOUSE IS STILL"""    
                 if e.type != MOUSEMOTION:
                     """EVENT MOUSE BUTTON DOWN"""
@@ -167,10 +164,12 @@ class Game(object):
                                     card_old_x = card.rect.center[0] 
                                     card_old_y = card.rect.center[1]
                                     curr_cards_parent = row_decks[i]
+                                    
                                     index = row_decks[i].cards.index(card)
                                     #index - efstu spil i rodinni eru sett i curr_cards_list
                                     curr_cards_list = row_decks[i].cards[index:]
                                     
+    
                                 #"EITT SPIL TEKId UPP."
                                 elif card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
                                     card_old_x = card.rect.center[0] 
@@ -186,7 +185,6 @@ class Game(object):
                                     card_old_y = card.rect.center[1]
                                     curr_cards_list.append(card)
                                     curr_cards_parent = col_decks[i]
-
                         """SEARCH FOR curr_cards IN HAND DECK"""
                         for card in hand.cards:
                                 if card.rect.collidepoint(down_pos) and card.isTop and not card.hidden:
@@ -194,9 +192,7 @@ class Game(object):
                                     card_old_y = card.rect.center[1]
                                     curr_cards_list.append(card)
                                     curr_cards_parent = hand
-
-                     
-
+                        
                     """EVENT MOUSE BUTTON UP"""  #this is inside event mouse is still.  
                     if e.type == MOUSEBUTTONUP:
                         up_pos = pygame.mouse.get_pos()
@@ -229,10 +225,6 @@ class Game(object):
                                         if row_decks[i].canAdd(curr_cards_list[0]) :
                                             temp = []
                                             n = len(curr_cards_list) 
-                                            if curr_cards_parent == hand:
-                                                game_score.StockToTabl()
-                                            elif curr_cards_parent in col_decks:
-                                                game_score.FoundToTabl()
                                                 
                                             for a in range(n):
                                                 temp.append(curr_cards_parent.pop_card())  
@@ -243,6 +235,12 @@ class Game(object):
                                             
                                             for b in range(n):
                                                 row_decks[i].add_card(temp.pop())
+                                                
+                                            if curr_cards_parent == hand:
+                                                game_score.StockToTabl()
+                                            elif curr_cards_parent in col_decks:
+                                                game_score.FoundToTabl()
+                                                
                                             curr_cards_list = []
     
                         except IndexError:  pass
@@ -252,7 +250,7 @@ class Game(object):
                             col_deck_sum = 0
                             for i in range(len(col_decks)):
                                 if col_decks[i].rect.collidepoint(up_pos):
-                                    if col_decks[i].canAdd(curr_cards_list[0]) :
+                                    if col_decks[i].canAdd(curr_cards_list[0]) and len(curr_cards_list) == 1 :
                                         col_decks[i].add_card(curr_cards_parent.pop_card()) #var med curr_cards inni i pop_card
                                         game_score.CardToFound()
                                         try: curr_cards_parent.cards[-1].isTop = True #Laetir spilid undir verda TOP
@@ -327,8 +325,8 @@ class Game(object):
     
     
             """ DRAW SCORE """
-            textonscreen.drawText(screen, SCREENRECT, "ESC to exit!",500,440)
-            textonscreen.drawScore(screen, SCREENRECT, game_score.score)
+            textonscreen.drawText(screen)
+            textonscreen.drawScore(screen, game_score.score)
             textonscreen.drawTime(screen, time_elapsed)
             textonscreen.drawHighScore(screen, hs_lst)
             

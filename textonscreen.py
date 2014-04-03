@@ -1,21 +1,26 @@
 from main import*
 from globals import *
 
-def drawScore(screen, SCREENRECT, score):
+def drawScore(screen, score):
     font=pygame.font.Font(None,30)
     scoretext=font.render("Score: "+str(score), 1,(255,255,255))
-    screen.blit(scoretext, (SCREENRECT.width*0.27, SCREENRECT.height*0.05))
+    screen.blit(scoretext, (SCREENRECT.width*0.80, SCREENRECT.height*0.05))
 
-def drawText(screen,SCREENRECT,text,x,y):
+def drawText(screen):
+    
+    500,440
+    
     myfont = pygame.font.SysFont("Arial", 20)
-    label = myfont.render("ESC to exit!", 1, (255,0,0))
-    screen.blit(label,(x, y))
+    restart = myfont.render("R to Restart!", 1, (255,0,0))
+    screen.blit(restart, (SCREENRECT.width*0.05, SCREENRECT.height*0.88))
+    esc = myfont.render("ESC to Exit!", 1, (255,0,0))
+    screen.blit(esc, (SCREENRECT.width*0.05, SCREENRECT.height*0.93))
 
 
 def drawTime(screen, time):
     font=pygame.font.Font(None,30)
     timetext=font.render("Time: "+str(time), 1,(255,255,255))
-    screen.blit(timetext, (SCREENRECT.width*0.1, SCREENRECT.height*0.9))
+    screen.blit(timetext, (SCREENRECT.width*0.80, SCREENRECT.height*0.9))
    
 
 def drawHighScore(screen, score_lst):
@@ -23,9 +28,12 @@ def drawHighScore(screen, score_lst):
     offset = 30
     font=pygame.font.Font(None,30)
     count = 0
+    
+    scoretext=font.render("High Scores:", 1,(255,255,255))
+    screen.blit(scoretext, (SCREENRECT.width*0.80, SCREENRECT.height*0.29))
+    
     for i in range(len(score_lst)):
         if i >= 3 : break
-        scoretext=font.render("HighScore: "+str(score_lst[i][2]), 1,(255,255,255))
-        screen.blit(scoretext, (SCREENRECT.width*0.1, SCREENRECT.height*0.6+i*offset))
-
+        scorevalue = font.render(str(score_lst[i][2]), 1,(255,255,255))
+        screen.blit(scorevalue, (SCREENRECT.width*0.80, SCREENRECT.height*0.36+i*offset))
 
