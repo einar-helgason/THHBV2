@@ -75,16 +75,6 @@ class Game(object):
                 pygame.mixer.music.load(music)
                 pygame.mixer.music.play(-1)
     
-        #load sound effects
-        mute_sound = False
-        mouseClick_sound = load_sound('Lamb.wav') #ekki notad
-        colDeck_sound = load_sound('1-up.wav')
-        flip_sound = load_sound('page-flip-02.wav')
-        winning_sound = load_sound('tribWin.wav')
-        if pygame.mixer:
-            music = os.path.join(main_dir, 'data/sounds', 'naturesounds.ogg')
-            pygame.mixer.music.load(music)
-            pygame.mixer.music.play(-1)
         
 
         #init decks.
