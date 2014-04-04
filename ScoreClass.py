@@ -1,5 +1,5 @@
 class Score(object):
-	
+	"""Keeps track of and updates the score of the game."""
 	def __init__(self):
 		self.winScore = 0
 		self.score = 0
@@ -13,7 +13,7 @@ class Score(object):
 		maxP = 525
 		set = 25 
 		if(self.Tx <= maxP - set):
-			self.self.score += set
+			self.score += set
 			self.Tx += set
 		if(self.Tx >= maxP):
 			pass
@@ -21,8 +21,9 @@ class Score(object):
 			self.score += maxP - self.Tx
 			self.Tx += maxP - self.Tx
 
+
 	#Playing a card from stock to tableau
-	def StockToTab(self):
+	def StockToTabl(self):
 		set = 45
 		maxS = 1080
 		if(self.Sx <= maxS - set):
@@ -67,15 +68,16 @@ class Score(object):
 		set = -75
 		self.score += set
 
+	#Each re-deal after the first pass through the stock (Deal 1)
+	def reDeal1(self):
+		set = -200
+		self.score += set
+		
 	#Each re-deal after the third pass through the stock (Deal 3)
 	def reDeal3(self):
 		set = -125
 		self.score += set
 
-	#Each re-deal after the first pass through the stock (Deal 1)
-	def reDeal1(self):
-		set = -200
-		self.score += set
 
 	#Each re-deal after the first pass through the stock (Unlimited Passes)
 	def reDealUL(self):
@@ -85,3 +87,9 @@ class Score(object):
 	def Win(self,timePassed):
 		winScore = (2*self.score)-(10*timePassed)
 		return winScore
+	
+def main():
+	print Score.__doc__
+    
+if __name__ == "__main__":
+    main()

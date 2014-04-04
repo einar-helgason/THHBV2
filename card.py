@@ -27,7 +27,7 @@ class Card(pygame.sprite.Sprite):
         self.image = self.back
         self.rect = self.image.get_rect()
         self.rect.center = (x,y)      
-        self.AOE = pygame.Rect(x,y, card_width, card_height/5) #Area Of Interest
+        self.AOE = pygame.Rect(x,y, card_width, card_height/5) #Area Of Interest, til ad taka upp morg spil i einu.
         self.AOE.topleft = (x-card_width/2, y-card_height/2)
         self.hidden = True
         self.isTop = False
@@ -56,12 +56,12 @@ class Card(pygame.sprite.Sprite):
             assert isinstance(args[0], tuple), 'Argument should be a tuple!'
             self.rect.center = args[0]
             #hax til ad setja midju AOE a rettan stad
-            self.AOE.center = tuple(map(operator.add, self.rect.center, (0, (-card_height/2)+((card_height/5)/2) )))
+            self.AOE.center = tuple(map(operator.add, self.rect.center, (0, (-card_height/2)+(card_height/10) )))
         else :
             try:
                 self.rect.center = (args[0],args[1])
                 #hax til ad setja midju AOE a rettan stad
-                self.AOE.center = tuple(map( operator.add, self.rect.center, (0,(-card_height/2)+((card_height/5)/2) )))
+                self.AOE.center = tuple(map( operator.add, self.rect.center, (0,(-card_height/2)+(card_height/10) )))
             except (AttributeError, TypeError):
                 raise AssertionError('Input variables should be x and y coordinates')
     

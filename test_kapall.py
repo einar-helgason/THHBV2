@@ -27,7 +27,7 @@ class test_card(unittest.TestCase):
     
     def setUp(self): 
         self.picture = preloader.load_image('01s.gif')
-        self.tester = card.Card(3,0, self.picture, 0, 0, 'test-parent')
+        self.tester = card.Card(3,0, self.picture, 0, 0)
         
     def test_card_creation(self):
         self.assertEqual(self.tester.suit, 3)
@@ -41,7 +41,7 @@ class test_card(unittest.TestCase):
         
     def test_card_str(self):
         self.assertEqual( 'Ace of Spades', str(self.tester) )
-        self.tester2 = card.Card(2, 1, self.picture, 0, 0, 'test-parent')
+        self.tester2 = card.Card(2, 1, self.picture, 0, 0)
         self.assertNotEqual(str(self.tester2), str(self.tester))
         self.assertNotEqual( 'foobar', str(self.tester))
         
@@ -65,7 +65,7 @@ class test_deck(unittest.TestCase):
         deck.initDeckImg()
         self.tester = deck.Deck()
         picture = preloader.load_image('01s.gif')
-        self.testCard = card.Card(3, 0, picture, 0, 0, 'test-parent')
+        self.testCard = card.Card(3, 0, picture, 0, 0)
         
     def test_deck_creation(self):
         self.assertEqual(self.tester.image_count, 52)
@@ -80,7 +80,7 @@ class test_deck(unittest.TestCase):
         
     def test_deck_add_card(self):
         picture = preloader.load_image('01s.gif')
-        testCard = card.Card(3, 0, picture, 0, 0, 'test-parent')
+        testCard = card.Card(3, 0, picture, 0, 0)
         self.assertEqual(len(self.tester), 52)
         self.tester.add_card(testCard)
         self.assertEqual(len(self.tester), 53)
@@ -119,7 +119,7 @@ class test_dealDeck(unittest.TestCase):
         self.master = deck.Deck()
         self.tester = deck.dealDeck(10, self.master, 30, 30)
         picture = preloader.load_image('01s.gif')
-        self.testCard = card.Card(3, 0, picture, 0, 0, 'test-parent')
+        self.testCard = card.Card(3, 0, picture, 0, 0)
     
     def test_dealDeck_creation(self):
         for i in range(len(self.tester.cards)):
@@ -143,7 +143,7 @@ class test_rowDeck(unittest.TestCase):
         self.n = 4
         self.tester = deck.rowDeck(self.n, self.master, 30, 30)
         self.picture = preloader.load_image('01s.gif')
-        self.testCard = card.Card(3, 0, self.picture, 0, 0, 'test-parent') #Ace of Spades
+        self.testCard = card.Card(3, 0, self.picture, 0, 0) #Ace of Spades
         
     def test_rowDeck_creation(self):
         self.assertEqual(len(self.master.cards), 52-self.n)
@@ -160,19 +160,19 @@ class test_rowDeck(unittest.TestCase):
         self.assertIsInstance(self.tester.cards[-1], card.Card)
     
     def test_rowDeck_canAdd(self):
-        legal = card.Card(0,1,self.picture, 0, 0, 'test-parent') #Two of Diamonds
+        legal = card.Card(0,1,self.picture, 0, 0) #Two of Diamonds
         self.tester.add_card(legal)
         self.assertTrue(self.tester.canAdd(self.testCard))
         
-        wrongRank = card.Card(0,2,self.picture, 0, 0, 'test-parent') #Three of Diamonds
+        wrongRank = card.Card(0,2,self.picture, 0, 0) #Three of Diamonds
         self.tester.add_card(wrongRank)
         self.assertFalse(self.tester.canAdd(self.testCard))
         
-        wrongSuit = card.Card(1,2,self.picture, 0, 0, 'test-parent') #Two of Clubs
+        wrongSuit = card.Card(1,2,self.picture, 0, 0) #Two of Clubs
         self.tester.add_card(wrongSuit)
         self.assertFalse(self.tester.canAdd(self.testCard))
         
-        allWrong = card.Card(3,5,self.picture, 0, 0, 'test-parent') #Six of Spades
+        allWrong = card.Card(3,5,self.picture, 0, 0) #Six of Spades
         self.tester.add_card(allWrong)
         self.assertFalse(self.tester.canAdd(self.testCard))
     
@@ -183,7 +183,7 @@ class test_colDeck(unittest.TestCase):
         self.master = deck.Deck()
         self.tester = deck.colDeck(4, self.master, 30, 30)
         self.picture = preloader.load_image('01s.gif')
-        self.testCard = card.Card(3, 0, self.picture, 0, 0, 'test-parent')
+        self.testCard = card.Card(3, 0, self.picture, 0, 0)
         
     def test_colDeck_creation(self):
         self.assertEqual(len(self.tester.cards), 4)
@@ -201,19 +201,19 @@ class test_colDeck(unittest.TestCase):
     
     
     def test_colDeck_canAdd(self):
-        legal = card.Card(3,1,self.picture, 0, 0, 'test-parent') #Two of Spades
+        legal = card.Card(3,1,self.picture, 0, 0) #Two of Spades
         self.tester.add_card(self.testCard)
         self.assertTrue(self.tester.canAdd(legal))
         
-        wrongRank = card.Card(3,2,self.picture, 0, 0, 'test-parent') #Three of Spades
+        wrongRank = card.Card(3,2,self.picture, 0, 0) #Three of Spades
         self.tester.add_card(self.testCard)
         self.assertFalse(self.tester.canAdd(wrongRank))
         
-        wrongSuit = card.Card(1,2,self.picture, 0, 0, 'test-parent') #Two of Clubs
+        wrongSuit = card.Card(1,2,self.picture, 0, 0) #Two of Clubs
         self.tester.add_card(self.testCard)
         self.assertFalse(self.tester.canAdd(wrongSuit))
         
-        allWrong = card.Card(0,5,self.picture, 0, 0, 'test-parent') #Six of Diamonds
+        allWrong = card.Card(0,5,self.picture, 0, 0) #Six of Diamonds
         self.tester.add_card(self.testCard)
         self.assertFalse(self.tester.canAdd(allWrong))
     
@@ -221,7 +221,7 @@ class test_handDeck(unittest.TestCase):
     def setUp(self):
         self.tester = deck.handDeck(30, 30)
         picture = preloader.load_image('01s.gif')
-        self.testCard = card.Card(3, 0, picture, 0, 0, 'test-parent')
+        self.testCard = card.Card(3, 0, picture, 0, 0)
     
     def test_handDeck_creation(self):
         self.assertEqual(self.tester.x, 30)
@@ -234,7 +234,6 @@ class test_handDeck(unittest.TestCase):
         self.assertListEqual(self.tester.cards, [self.testCard])
         self.assertTupleEqual(self.tester.cards[-1].rect.center, (self.tester.x,self.tester.y))
         self.assertTrue(self.testCard.isTop)
-        self.assertEqual(self.testCard.parent, 'handDeck')
         
             
         
