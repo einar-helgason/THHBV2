@@ -55,6 +55,7 @@ class Game(object):
             colDeck_sound = load_sound('1-up.wav')
             flip_sound = load_sound('page-flip-02.wav')
             winning_sound = load_sound('tribWin.wav')
+            fireworks_sound = load_sound('Firework.wav')
             if pygame.mixer:
                 music = os.path.join(main_dir, 'data/sounds', 'naturesounds.ogg')
                 pygame.mixer.music.load(music)
@@ -62,7 +63,7 @@ class Game(object):
 
             
         if self.theme == 2:
-            background = load_image('sw_3.jpg') #INIT BACKGROUND
+            background = load_image('sw_2.jpg') #INIT BACKGROUND
             background = pygame.transform.scale(background, SCREENRECT.size)
             #load sound effects
             mute_sound = False
@@ -70,6 +71,7 @@ class Game(object):
             colDeck_sound = load_sound('lightsaber_03.wav')
             flip_sound = load_sound('page-flip-02.wav')
             winning_sound = load_sound('tribWin.wav')
+            fireworks_sound = load_sound('Firework.wav')
             if pygame.mixer:
                 music = os.path.join(main_dir, 'data/sounds', 'darthVaderRelax.ogg')
                 pygame.mixer.music.load(music)
@@ -164,6 +166,8 @@ class Game(object):
 
                     if e.key == K_u:
                         """ WIN ANIMATION SHORTCUT """
+                        winning_sound.play()
+                        fireworks_sound.play()
                         done = 0
                         while not done:
                             fireworks.draw_stars(screen, stars, black)
@@ -171,12 +175,16 @@ class Game(object):
                             fireworks.draw_stars(screen, stars, white)
                             textonscreen.drawWin(screen,game_score.score)
                             pygame.display.update()
-                            for e in pygame.event.get():
-                                if e.type == QUIT or e.type == KEYDOWN:
+                            for ev in pygame.event.get():
+                                if ev.type == QUIT:
+                                    pygame.quit()
+                                    sys.exit()
+                                elif ev.type == KEYDOWN:
                                     done = 1
                                     break
-                                elif e.type == MOUSEBUTTONDOWN and e.button == 1:
-                                    WINCENTER[:] = list(e.pos)
+                                elif ev.type == MOUSEBUTTONDOWN and ev.button == 1:
+                                    fireworks_sound.play()
+                                    WINCENTER[:] = list(ev.pos)
                             c.tick(50)
 
                     """ MUTE - m to mute"""
@@ -321,7 +329,6 @@ class Game(object):
                             """WINNER IF HAPPENDS"""
                             if col_deck_sum == 52:
                                 winning_sound.play()
-
                                 """ ADD HIGHSCORE """
                                 if len(hs_lst) == 0: 
                                     hs_lst = highscore.getHighScore()
@@ -334,8 +341,9 @@ class Game(object):
                                             highscore.setHighScore("player", game_score.score) 
                                             hs_lst = highscore.getHighScore()
                                             break
-
+                            
                                 """ WIN ANIMATION """
+                                fireworks_sound.play()
                                 done = 0
                                 while not done:
                                     fireworks.draw_stars(screen, stars, black)
@@ -343,12 +351,16 @@ class Game(object):
                                     fireworks.draw_stars(screen, stars, white)
                                     textonscreen.drawWin(screen,game_score.score)
                                     pygame.display.update()
-                                    for e in pygame.event.get():
-                                        if e.type == QUIT or e.type == KEYDOWN:
+                                    for ev in pygame.event.get():
+                                        if ev.type == QUIT:
+                                            pygame.quit()
+                                            sys.exit()
+                                        elif ev.type == KEYDOWN:
                                             done = 1
                                             break
-                                        elif e.type == MOUSEBUTTONDOWN and e.button == 1:
-                                            WINCENTER[:] = list(e.pos)
+                                        elif ev.type == MOUSEBUTTONDOWN and ev.button == 1:
+                                            fireworks_sound.play()
+                                            WINCENTER[:] = list(ev.pos)
                                     c.tick(50)
                                 
                         except IndexError: pass

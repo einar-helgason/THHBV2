@@ -1,4 +1,3 @@
-from main import*
 from globals import *
 
 def drawScore(screen, score):
