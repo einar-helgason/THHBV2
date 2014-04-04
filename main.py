@@ -19,6 +19,7 @@ class Game(object):
     """Main entry point of the game."""
     def __init__(self):
         self.keep_playing = False
+        self.theme = 1;
         self.startNewGame()
         while self.keep_playing: self.startNewGame()
         pygame.quit()
@@ -37,24 +38,41 @@ class Game(object):
         hs_lst = highscore.getHighScore()
         
         curr_cards_list = []
-        
-        background = load_image('background2.jpg') #INIT BACKGROUND
-        background = pygame.transform.scale(background, SCREENRECT.size)
-    
+        if self.theme == 1:
+            background = load_image('background2.jpg') #INIT BACKGROUND
+            background = pygame.transform.scale(background, SCREENRECT.size)
+            #load sound effects
+            mute_sound = False
+            mouseClick_sound = load_sound('Lamb.wav') #ekki notad
+            colDeck_sound = load_sound('1-up.wav')
+            flip_sound = load_sound('page-flip-02.wav')
+            winning_sound = load_sound('tribWin.wav')
+            if pygame.mixer:
+                music = os.path.join(main_dir, 'data/sounds', 'naturesounds.ogg')
+                pygame.mixer.music.load(music)
+                pygame.mixer.music.play(-1)
+
+            
+        if self.theme == 2:
+            background = load_image('sw_3.jpg') #INIT BACKGROUND
+            background = pygame.transform.scale(background, SCREENRECT.size)
+            #load sound effects
+            mute_sound = False
+            mouseClick_sound = load_sound('Lamb.wav') #ekki notad
+            colDeck_sound = load_sound('lightsaber_03.wav')
+            flip_sound = load_sound('page-flip-02.wav')
+            winning_sound = load_sound('tribWin.wav')
+            if pygame.mixer:
+                music = os.path.join(main_dir, 'data/sounds', 'darthVaderRelax.ogg')
+                pygame.mixer.music.load(music)
+                pygame.mixer.music.play(-1)
+                
         no_card_img = load_image('shade_night.png')
         
         deck.initDeckImg()
-    
-        #load sound effects
-        mute_sound = False
-        mouseClick_sound = load_sound('Lamb.wav') #ekki notad
-        colDeck_sound = load_sound('1-up.wav')
-        flip_sound = load_sound('page-flip-02.wav')
-        winning_sound = load_sound('tribWin.wav')
-        if pygame.mixer:
-            music = os.path.join(main_dir, 'data/sounds', 'naturesounds.ogg')
-            pygame.mixer.music.load(music)
-            pygame.mixer.music.play(-1)
+
+        
+        
         
         #init decks.
         master = deck.Deck()
@@ -145,6 +163,21 @@ class Game(object):
                         going = False
                         self.keep_playing = True
                         break
+
+                """ Theme """
+                if e.type == KEYDOWN:
+                    if e.key == K_1:
+                        self.theme = 1
+                        going = False
+                        self.keep_playing = True
+                        break
+                    
+                    if e.key == K_2:
+                        self.theme = 2
+                        going = False
+                        self.keep_playing = True
+                        break
+                    
                 """EVENT MOUSE IS STILL"""    
                 if e.type != MOUSEMOTION:
                     """EVENT MOUSE BUTTON DOWN"""

@@ -15,7 +15,12 @@ def drawText(screen):
     screen.blit(restart, (SCREENRECT.width*0.05, SCREENRECT.height*0.88))
     esc = myfont.render("ESC to Exit!", 1, (255,0,0))
     screen.blit(esc, (SCREENRECT.width*0.05, SCREENRECT.height*0.93))
-
+    theme1 = myfont.render("Press 1 for forest theme", 1, (255,0,0))
+    screen.blit(theme1,(SCREENRECT.width*0.25, SCREENRECT.height*0.88))
+    theme2 = myfont.render("Press 2 for StarWars theme",1,(255,0,0))
+    screen.blit(theme2,(SCREENRECT.width*0.25, SCREENRECT.height*0.93))
+    mute = myfont.render("M to mute!",1,(255,0,0))
+    screen.blit(mute,(SCREENRECT.width*0.05, SCREENRECT.height*0.83)) 
 
 def drawTime(screen, time):
     font=pygame.font.Font(None,30)
